@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -13,57 +8,43 @@ datasource db {
 }
 
 model Source {
-  id String @id @default(cuid())
-
-  name String
-  url  String? @unique
-
-  fetchType  FetchType
-  parserType String    @default("default")
-
-  fetchConfig Json?
-  category    String?
-
-  enabled              Boolean @default(true)
-  fetchIntervalMinutes Int     @default(30)
-
-  lastFetchedAt DateTime?
-  lastSuccessAt DateTime?
-  lastFailedAt  DateTime?
-
-  failureCount Int     @default(0)
-  lastError    String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  articles  RawArticle[]
-  fetchLogs FetchLog[]
+  id                   String       @id @default(cuid())
+  name                 String
+  url                  String?      @unique
+  fetchType            FetchType
+  parserType           String       @default("default")
+  fetchConfig          Json?
+  category             String?
+  enabled              Boolean      @default(true)
+  fetchIntervalMinutes Int          @default(30)
+  lastFetchedAt        DateTime?
+  lastSuccessAt        DateTime?
+  lastFailedAt         DateTime?
+  failureCount         Int          @default(0)
+  lastError            String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  fetchLogs            FetchLog[]
+  articles             RawArticle[]
 }
 
 model RawArticle {
-  id String @id @default(cuid())
-
-  sourceId String
-  source   Source @relation(fields: [sourceId], references: [id])
-
-  title String
-  link  String  @unique
-  guid  String?
-
-  summary  String?
-  content  String?
-  author   String?
-  imageUrl String?
-
+  id          String        @id @default(cuid())
+  sourceId    String
+  title       String
+  link        String        @unique
+  guid        String?
+  summary     String?
+  content     String?
+  author      String?
+  imageUrl    String?
   publishedAt DateTime?
-  fetchedAt   DateTime  @default(now())
-
-  hash   String?
-  status ArticleStatus @default(NEW)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  fetchedAt   DateTime      @default(now())
+  hash        String?
+  status      ArticleStatus @default(NEW)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  source      Source        @relation(fields: [sourceId], references: [id])
 
   @@unique([sourceId, guid])
   @@index([sourceId])
@@ -73,22 +54,16 @@ model RawArticle {
 }
 
 model FetchLog {
-  id String @id @default(cuid())
-
-  sourceId String
-  source   Source @relation(fields: [sourceId], references: [id])
-
-  status FetchStatus
-
-  startedAt  DateTime
-  finishedAt DateTime?
-
+  id            String      @id @default(cuid())
+  sourceId      String
+  status        FetchStatus
+  startedAt     DateTime
+  finishedAt    DateTime?
   itemsFound    Int?
   itemsInserted Int?
-
-  errorMessage String?
-
-  createdAt DateTime @default(now())
+  errorMessage  String?
+  createdAt     DateTime    @default(now())
+  source        Source      @relation(fields: [sourceId], references: [id])
 
   @@index([sourceId])
   @@index([status])
