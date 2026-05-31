@@ -4,6 +4,7 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
+		"prisma": "prisma",
 		"generate": "prisma generate",
 		"migrate": "prisma migrate dev"
 	},
