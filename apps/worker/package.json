@@ -1,0 +1,6 @@
+{
+	"name": "@techblog/worker",
+	"dependencies": {
+		"@techblog/database": "workspace:*"
+	}
+}
