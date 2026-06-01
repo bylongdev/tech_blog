@@ -27,6 +27,9 @@ importers:
       '@techblog/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@techblog/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   packages/database:
     dependencies:
@@ -46,6 +49,8 @@ importers:
       prisma:
         specifier: ^7.8.0
         version: 7.8.0(@types/react@19.2.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(typescript@6.0.3)
+
+  packages/shared: {}
 
 packages:
 

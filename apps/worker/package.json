@@ -1,6 +1,8 @@
 {
 	"name": "@techblog/worker",
+	"type": "module",
 	"dependencies": {
-		"@techblog/database": "workspace:*"
+		"@techblog/database": "workspace:*",
+		"@techblog/shared": "workspace:*"
 	}
 }
