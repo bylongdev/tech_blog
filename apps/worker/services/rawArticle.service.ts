@@ -10,7 +10,7 @@ export class RawArticleService {
 				},
 				update: {},
 				create: {
-					sourceId: "techcrunch",
+					sourceId: article.sourceId,
 					title: article.title,
 					link: article.link,
 					content: article.content ?? null,

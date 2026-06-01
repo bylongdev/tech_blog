@@ -1,3 +1,4 @@
+import { prisma } from "@techblog/database/src/client.js";
 import type { IFetcher } from "./IFetcher.js";
 import type { RawArticleDTO } from "@techblog/shared";
 
@@ -15,6 +16,21 @@ export class TechCrunchFetcher implements IFetcher {
 			// TechCrunch's RSS feed is available at https://techcrunch.com/feed/
 			const feed = await parser.parseURL("https://techcrunch.com/feed/");
 
+			const sourceId = await prisma.source.findUnique({
+				where: {
+					slug: this.sourceSlug,
+				},
+				select: {
+					id: true,
+				},
+			});
+
+			if (!sourceId) {
+				throw new Error(
+					`Source with slug ${this.sourceSlug} not found in database`,
+				);
+			}
+
 			if (!feed) {
 				throw new Error("Failed to fetch TechCrunch feed");
 			}
@@ -26,6 +42,7 @@ export class TechCrunchFetcher implements IFetcher {
 				content: item.content || "",
 				author: item.creator || "",
 				fetchedAt: new Date(),
+				sourceId: sourceId.id,
 				...(item.pubDate && {
 					publishedAt: new Date(item.pubDate),
 				}),

@@ -5,5 +5,6 @@ export interface RawArticleDTO {
 	content?: string;
 	author?: string;
 	publishedAt?: Date;
+	sourceId: string;
 	fetchedAt: Date;
 }
