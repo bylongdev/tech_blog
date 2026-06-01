@@ -1,6 +1,9 @@
 export interface RawArticleDTO {
 	title: string;
-	url: string;
+	link: string;
+	guid: string;
 	content?: string;
+	author?: string;
 	publishedAt?: Date;
+	fetchedAt: Date;
 }

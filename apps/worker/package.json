@@ -1,8 +1,13 @@
 {
 	"name": "@techblog/worker",
 	"type": "module",
+	"version": "1.0.0",
+	"scripts": {
+		"dev": "tsx ./fetchers/index.ts"
+	},
 	"dependencies": {
 		"@techblog/database": "workspace:*",
-		"@techblog/shared": "workspace:*"
+		"@techblog/shared": "workspace:*",
+		"rss-parser": "^3.13.0"
 	}
 }

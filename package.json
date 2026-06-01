@@ -7,6 +7,7 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"wk:dev": "pnpm --filter @techblog/worker dev",
 		"db:generate": "pnpm --filter @techblog/database prisma generate",
 		"db:migrate": "pnpm --filter @techblog/database prisma migrate dev"
 	},

@@ -1,6 +1,8 @@
 import type { RawArticleDTO } from "@techblog/shared";
 
-interface IFetcher {
-	sourceName: string;
-	fetch: () => Promise<RawArticleDTO[]>;
+export interface IFetcher {
+	readonly sourceSlug: string;
+	readonly sourceName: string;
+
+	fetch(): Promise<RawArticleDTO[]>;
 }
