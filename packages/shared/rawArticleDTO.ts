@@ -1,4 +1,4 @@
-export interface RawArticleDTO {
+export interface CreateRawArticleDto {
 	title: string;
 	link: string;
 	guid: string;

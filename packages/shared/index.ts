@@ -1,1 +1,1 @@
-export type { RawArticleDTO } from "./rawArticleDTO.js";
+export type { CreateRawArticleDto } from "./rawArticleDTO.js";
