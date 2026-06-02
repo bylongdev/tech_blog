@@ -11,6 +11,7 @@ model Source {
   id                   String       @id @default(cuid())
   name                 String
   url                  String?      @unique
+  slug                 String       @unique
   fetchType            FetchType
   parserType           String       @default("default")
   fetchConfig          Json?
