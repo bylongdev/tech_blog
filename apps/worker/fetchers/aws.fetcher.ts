@@ -11,25 +11,51 @@ export class AWSFetcher implements IFetcher {
 	readonly sourceName = "AWS";
 	readonly sourceSlug = "aws";
 
-	async fetch(): Promise<CreateRawArticleDto[]> {
-		try {
-			const feed = await parser.parseURL(
-				"https://aws.amazon.com/blogs/aws/feed/",
-			);
+	// Helper method to fetch source details from the database
+	async getSource(): Promise<Source> {
+		let source: Source;
 
-			const sourceId = await prisma.source.findUnique({
+		try {
+			// Fetch the source details from the database using Prisma
+			const res = await prisma.source.findUnique({
 				where: {
-					slug: "aws",
+					slug: this.sourceSlug,
 				},
 				select: {
 					id: true,
 				},
 			});
 
-			if (!sourceId) {
-				throw new Error(`Source with slug aws not found in database`);
+			if (!res) {
+				throw new Error(
+					`Source with slug ${this.sourceSlug} not found in database`,
+				);
 			}
 
+			source = res as Source;
+		} catch (error) {
+			console.error(
+				`Error fetching source with slug ${this.sourceSlug}: ${error}`,
+			);
+			throw error;
+		}
+
+		return source;
+	}
+
+	// Fetch articles from the AWS blog RSS feed
+	async fetch(): Promise<CreateRawArticleDto[]> {
+		try {
+			// Use the rss-parser library to fetch and parse the RSS feed from AWS
+			const feed = await parser.parseURL(
+				"https://aws.amazon.com/blogs/aws/feed/",
+			);
+
+			const source = await this.getSource();
+
+			if (!source) {
+				throw new Error(`Source with slug aws not found in database`);
+			}
 			if (!feed) {
 				throw new Error("Failed to fetch AWS feed");
 			}
@@ -47,7 +73,7 @@ export class AWSFetcher implements IFetcher {
 				content: item.content || "",
 				author: item.creator || "",
 				fetchedAt: new Date(),
-				sourceId: sourceId.id,
+				sourceId: source.id,
 				...(item.pubDate && {
 					publishedAt: new Date(item.pubDate),
 				}),
