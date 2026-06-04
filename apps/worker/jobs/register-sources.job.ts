@@ -1,6 +1,6 @@
 // scripts/register-sources.ts
 import { prisma } from "@techblog/database/src/client.js";
-import { SOURCES } from "./source.registry.js";
+import { SOURCES } from "../fetchers/registers/source.registry.js";
 
 async function main() {
 	// Upsert each source into the database
