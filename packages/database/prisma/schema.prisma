@@ -37,6 +37,7 @@ model RawArticle {
   guid        String?
   summary     String?
   content     String?
+  rawHtml     String?
   author      String?
   imageUrl    String?
   publishedAt DateTime?

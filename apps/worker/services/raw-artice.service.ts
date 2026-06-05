@@ -28,6 +28,7 @@ export class RawArticleService {
 						data,
 					});
 
+					console.log(`Saved article: ${data.title}`);
 					return true; // Indicate success for this article
 				} catch (error) {
 					console.error("Error saving article:", error);
@@ -51,6 +52,7 @@ export class RawArticleService {
 			link: article.link,
 			guid: article.guid,
 			content: article.content ?? null,
+			rawHtml: article.rawHtml ?? null,
 			author: article.author ?? null,
 			publishedAt: article.publishedAt ?? null,
 			fetchedAt: article.fetchedAt,

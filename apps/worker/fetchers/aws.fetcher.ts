@@ -1,11 +1,12 @@
 import { prisma } from "@techblog/database/src/client.js";
 import type { IFetcher } from "./IFetcher.js";
 import type { CreateRawArticleDto } from "@techblog/shared";
+import type { Source } from "../types/source.type.js";
 
 // Tools
-import Parser from "rss-parser";
-import type { Source } from "../types/source.type.js";
-const parser = new Parser();
+import parserClient from "../clients/rss.client.js";
+
+const parser = parserClient; // Use the shared parser client with custom request options
 
 export class AWSFetcher implements IFetcher {
 	readonly sourceName = "AWS";
@@ -47,11 +48,10 @@ export class AWSFetcher implements IFetcher {
 	async fetch(): Promise<CreateRawArticleDto[]> {
 		try {
 			// Use the rss-parser library to fetch and parse the RSS feed from AWS
-			const feed = await parser.parseURL(
-				"https://aws.amazon.com/blogs/aws/feed/",
-			);
-
 			const source = await this.getSource();
+			const feed = await parser.parseURL(
+				source.url || "https://aws.amazon.com/blogs/aws/feed/",
+			);
 
 			if (!source) {
 				throw new Error(`Source with slug aws not found in database`);
@@ -80,7 +80,7 @@ export class AWSFetcher implements IFetcher {
 			}));
 		} catch (error) {
 			console.error(`Error fetching AWS feed: ${error}`);
-			return [];
+			throw error;
 		}
 	}
 }

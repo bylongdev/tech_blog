@@ -4,6 +4,6 @@ import type { SourceConfig } from "../registers/source.registry.js";
 export const openaiSource: SourceConfig = {
 	slug: "openai",
 	name: "OpenAI Blog",
-	url: "https://openai.com/blog/rss/",
-	fetchType: "RSS",
+	url: "https://openai.com/blog/rss.xml",
+	fetchType: "HTML",
 };

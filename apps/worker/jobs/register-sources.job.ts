@@ -4,9 +4,9 @@ import { SOURCES } from "../fetchers/registers/source.registry.js";
 async function registerSources() {
 	await Promise.all(
 		SOURCES.map(async (source) => {
-			// Upsert the source based on its URL to avoid duplicates
+			// Upsert the source based on its slug to avoid duplicates
 			await prisma.source.upsert({
-				where: { url: source.url },
+				where: { slug: source.slug },
 				update: {
 					name: source.name,
 					url: source.url,
