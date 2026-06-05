@@ -5,17 +5,31 @@ import { FetchLogService } from "../services/fetch-log.service.js";
 
 const fetchers = [new AWSFetcher()];
 
-for (const fetcher of fetchers) {
-	const fetchLogService = new FetchLogService();
-	const fetchLog = await fetchLogService.start(
-		await fetcher.getSource().then((source) => source.id),
-	);
+async function fetchSources() {
+	for (const fetcher of fetchers) {
+		const fetchLog = new FetchLogService();
+		const fetchLogId = await fetchLog
+			.start(await fetcher.getSource().then((source) => source.id))
+			.then((log) => log.id);
 
-	// Fetch articles from the source
-	const articles = await fetcher.fetch();
+		// Fetch articles from the source
+		const articles = await fetcher.fetch();
 
-	const rawArticleService = new RawArticleService();
-	await rawArticleService.saveMany(articles);
+		try {
+			const rawArticleService = new RawArticleService();
 
-	console.log(fetcher.sourceName, articles.length);
+			// Save the fetched articles to the database
+			const result = await rawArticleService.saveMany(articles);
+
+			// Update the fetch log with the results of the fetch operation
+			await fetchLog.success(fetchLogId, {
+				itemsFound: result.processed,
+				itemsProcessed: result.success,
+			});
+		} catch (error) {
+			fetchLog.failed(fetchLogId, error);
+		}
+	}
 }
+
+export { fetchSources };

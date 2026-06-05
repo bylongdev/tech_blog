@@ -1,6 +1,6 @@
 import { prisma } from "@techblog/database/src/client.js";
 import type { IFetcher } from "./IFetcher.js";
-import type { RawArticleDTO } from "@techblog/shared";
+import type { CreateRawArticleDto } from "@techblog/shared";
 
 // Tools
 import Parser from "rss-parser";
@@ -11,7 +11,7 @@ export class TechCrunchFetcher implements IFetcher {
 	readonly sourceSlug = "techcrunch";
 	readonly sourceName = "TechCrunch";
 
-	async fetch(): Promise<RawArticleDTO[]> {
+	async fetch(): Promise<CreateRawArticleDto[]> {
 		try {
 			// TechCrunch's RSS feed is available at https://techcrunch.com/feed/
 			const feed = await parser.parseURL("https://techcrunch.com/feed/");
