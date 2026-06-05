@@ -66,11 +66,18 @@ export class AWSFetcher implements IFetcher {
 				);
 			});
 
+			const item = feed.items[0];
+			if (item) {
+				console.log(Object.entries(item));
+				console.log(item["content:encodedSnippet"]);
+			}
+
 			return feed.items.map((item) => ({
 				title: item.title || "",
 				link: item.link || "",
 				guid: item.guid || "",
-				content: item.content || "",
+				content: item["content:encodedSnippet"] || "",
+				rawHtml: item["content:encoded"] || "",
 				author: item.creator || "",
 				fetchedAt: new Date(),
 				sourceId: source.id,

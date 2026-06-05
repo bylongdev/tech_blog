@@ -1,12 +1,11 @@
 import { AWSFetcher } from "../fetchers/aws.fetcher.js";
-import { OpenAIFetcher } from "../fetchers/openai.fetcher.js";
 import { GitHubFetcher } from "../fetchers/github.fetcher.js";
 
 import { RawArticleService } from "../services/raw-artice.service.js";
 import { FetchLogService } from "../services/fetch-log.service.js";
 
 // const fetchers = [new AWSFetcher(), new OpenAIFetcher(), new GitHubFetcher()];
-const fetchers = [new GitHubFetcher()];
+const fetchers = [new AWSFetcher(), new GitHubFetcher()];
 
 async function fetchSources() {
 	for (const fetcher of fetchers) {

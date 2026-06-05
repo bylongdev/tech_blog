@@ -64,6 +64,14 @@ export class OpenAIFetcher implements IFetcher {
 				throw new Error("Failed to fetch Open AI feed");
 			}
 
+			const item = feed.items[0];
+			if (item) {
+				console.log(Object.entries(item));
+				console.log(item["content:encodedSnippet"]);
+			}
+
+			return [];
+
 			return feed.items.map((item) => ({
 				title: item.title || "",
 				link: item.link || "",
