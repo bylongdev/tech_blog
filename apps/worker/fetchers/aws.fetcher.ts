@@ -4,7 +4,7 @@ import type { CreateRawArticleDto } from "@techblog/shared";
 
 // Tools
 import Parser from "rss-parser";
-import type { Source } from "./sources/source.type.js";
+import type { Source } from "@techblog/database/src/types/source.type.js";
 const parser = new Parser();
 
 export class AWSFetcher implements IFetcher {

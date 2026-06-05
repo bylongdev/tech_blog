@@ -1,15 +1,34 @@
-import { TechCrunchFetcher } from "./techcrunch.fetcher.js";
+// Fetcher Implementations
 import { AWSFetcher } from "./aws.fetcher.js";
+
+// Article Service
 import { RawArticleService } from "../services/rawArticle.service.js";
 
-const fetchers = [new AWSFetcher()];
+// Source Management
+import { registerSources } from "./registers/registerSources.js";
 
-for (const fetcher of fetchers) {
-	const articles = await fetcher.fetch();
+// Database
+import { prisma } from "@techblog/database/src/client.js";
 
-	const rawArticleService = new RawArticleService();
+async function main() {
+	await registerSources();
 
-	await rawArticleService.saveMany(articles);
+	// Initialize fetchers for each source
+	const fetchers = [new AWSFetcher()];
 
-	console.log(fetcher.sourceName, articles.length);
+	// Fetch articles from each source and save them to the database
+	for (const fetcher of fetchers) {
+		const articles = await fetcher.fetch();
+
+		// Save the fetched articles to the database using the RawArticleService
+		const rawArticleService = new RawArticleService();
+		// await rawArticleService.saveMany(articles);
+	}
 }
+
+main()
+	.catch(console.error)
+	.finally(async () => {
+		// Perform any necessary cleanup here, such as closing database connections or releasing resources.
+		await prisma.$disconnect();
+	});
