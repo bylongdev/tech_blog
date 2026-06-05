@@ -9,7 +9,7 @@ for (const fetcher of fetchers) {
 	const fetchLogService = new FetchLogService();
 	const fetchLog = await fetchLogService.start(
 		await fetcher.getSource().then((source) => source.id),
-	);
+	); // Return the created fetch log entry
 
 	// Fetch articles from the source
 	const articles = await fetcher.fetch();
