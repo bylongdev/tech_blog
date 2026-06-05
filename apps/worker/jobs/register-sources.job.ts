@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import { SOURCES } from "./source.registry.js";
+import { SOURCES } from "../fetchers/registers/source.registry.js";
 
 async function registerSources() {
 	await Promise.all(

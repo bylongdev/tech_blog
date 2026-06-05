@@ -3,8 +3,8 @@
 	"type": "module",
 	"version": "1.0.0",
 	"scripts": {
-		"dev": "tsx ./fetchers/index.ts",
-		"source:register": "tsx ./fetchers/registers/registerSources.ts"
+		"dev": "tsx ./fetchers/jobs/fetch-sources.job.ts",
+		"source:register": "tsx ./fetchers/jobs/register-sources.job.ts"
 	},
 	"dependencies": {
 		"@techblog/database": "workspace:*",
