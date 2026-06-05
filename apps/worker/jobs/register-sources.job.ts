@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import { SOURCES } from "../fetchers/registers/source.registry.js";
+import { SOURCES } from "../sources/registers/source.registry.js";
 
 async function registerSources() {
 	await Promise.all(
@@ -10,6 +10,8 @@ async function registerSources() {
 				update: {
 					name: source.name,
 					url: source.url,
+					fetchType: source.fetchType,
+					enabled: source.enabled ?? true, // Default to true if not specified
 				},
 				create: source,
 			});

@@ -1,13 +1,22 @@
 // fetchers/source.registry.ts
-import { awsSource } from "../sources/aws.source.js";
-import { openaiSource } from "../sources/openai.source.js";
-import { githubSource } from "../sources/github.source.js";
+import { awsSource } from "../aws.source.js";
+import { openaiSource } from "../openai.source.js";
+import { githubSource } from "../github.source.js";
+import { techcrunchSource } from "../techcrunch.source.js";
+import { anthropicSource } from "../anthropic.source.js";
 
 export type SourceConfig = {
 	slug: string;
 	name: string;
 	url: string;
 	fetchType: "RSS" | "API" | "HTML";
+	enabled?: boolean;
 };
 
-export const SOURCES: SourceConfig[] = [awsSource, openaiSource, githubSource];
+export const SOURCES: SourceConfig[] = [
+	awsSource,
+	openaiSource,
+	githubSource,
+	techcrunchSource,
+	anthropicSource,
+];
