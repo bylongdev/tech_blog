@@ -1,10 +1,13 @@
 import { registerSources } from "./jobs/register-sources.job.js";
 import { fetchSources } from "./jobs/fetch-sources.job.js";
+import { embeddingJob } from "./jobs/embedding.job.js";
 import { prisma } from "@techblog/database/src/client.js";
 
 async function main() {
-	await registerSources();
-	await fetchSources();
+	// await registerSources();
+	// await fetchSources();
+
+	await embeddingJob("cmq3acgpp000644gdmuhv9805");
 }
 
 main()

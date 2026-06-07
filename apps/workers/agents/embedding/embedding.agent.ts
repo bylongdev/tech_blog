@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import { EmbeddingService } from "./embedding.service.js";
+import { EmbeddingService } from "../../services/embedding.service.js";
 
 /* 
 	EmbeddingAgent take responsibility for:
@@ -19,20 +19,9 @@ export class EmbeddingAgent {
 		});
 
 		if (!candidate) {
-			/* await prisma.articleCandidate.create({
-				data: {
-					rawArticleId,
-					status: "QUEUED",
-				},
-			});
-			return; */
 			throw new Error(
 				`ArticleCandidate not found for rawArticleId: ${rawArticleId}`,
 			);
-		}
-
-		if (!candidate.embeddingText) {
-			throw new Error(`Missing embeddingText for candidate: ${rawArticleId}`);
 		}
 
 		// Step 2: Create embedding vector

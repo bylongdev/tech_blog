@@ -76,7 +76,6 @@ model ArticleCandidate {
 
 model ArticleGroup {
   id         String             @id @default(uuid())
-  title      String
   candidates ArticleCandidate[]
 
   createdAt DateTime @default(now())
