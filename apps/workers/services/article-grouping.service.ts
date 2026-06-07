@@ -81,6 +81,26 @@ export class GroupingService {
 				groupId: group.id,
 				score: maxSimilarity,
 			};
+		} else {
+			// If the highest similarity is above the threshold, group with the best match
+			const bestMatchIndex = similarities.findIndex(
+				(similarity) => similarity === maxSimilarity,
+			);
+			const bestMatchCandidate = candidates[bestMatchIndex];
+
+			await prisma.articleCandidate.update({
+				where: { id: articleId },
+				data: {
+					groupId: bestMatchCandidate?.groupId,
+					status: "GROUPED",
+				},
+			});
+
+			return {
+				action: "GROUPED_WITH_EXISTING",
+				groupId: bestMatchCandidate?.groupId,
+				score: maxSimilarity,
+			};
 		}
 	}
 }
