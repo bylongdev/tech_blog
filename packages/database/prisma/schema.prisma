@@ -30,10 +30,10 @@ model Source {
 }
 
 model RawArticle {
-  id          String        @id @default(cuid())
+  id          String    @id @default(cuid())
   sourceId    String
   title       String
-  link        String        @unique
+  link        String    @unique
   guid        String?
   summary     String?
   content     String?
@@ -41,18 +41,45 @@ model RawArticle {
   author      String?
   imageUrl    String?
   publishedAt DateTime?
-  fetchedAt   DateTime      @default(now())
-  hash        String?
-  status      ArticleStatus @default(NEW)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  source      Source        @relation(fields: [sourceId], references: [id])
+  fetchedAt   DateTime  @default(now())
+
+  hash             String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  source           Source            @relation(fields: [sourceId], references: [id])
+  articleCandidate ArticleCandidate?
 
   @@unique([sourceId, guid])
   @@index([sourceId])
-  @@index([status])
   @@index([publishedAt])
   @@index([hash])
+}
+
+model ArticleCandidate {
+  id           String     @id @default(cuid())
+  rawArticleId String     @unique
+  rawArticle   RawArticle @relation(fields: [rawArticleId], references: [id])
+
+  cleanedTitle  String
+  embeddingText String
+  embedding     Json?
+
+  groupId String?
+  group   ArticleGroup? @relation(fields: [groupId], references: [id])
+
+  status CandidateStatus @default(QUEUED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ArticleGroup {
+  id         String             @id @default(uuid())
+  title      String
+  candidates ArticleCandidate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model FetchLog {
@@ -85,10 +112,10 @@ enum FetchType {
   API
 }
 
-enum ArticleStatus {
-  NEW
-  DUPLICATE
+enum CandidateStatus {
   QUEUED
+  EMBEDDED
+  GROUPED
   PROCESSED
   FAILED
 }

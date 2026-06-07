@@ -1,5 +1,5 @@
 // fetchers/aws.source.ts
-import type { SourceConfig } from "../sources/registers/source.registry.js";
+import type { SourceConfig } from "./registers/source.registry.js";
 
 export const awsSource: SourceConfig = {
 	slug: "aws",
