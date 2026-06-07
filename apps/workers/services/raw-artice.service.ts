@@ -1,5 +1,6 @@
 import { prisma } from "@techblog/database/src/client.js";
 import type { CreateRawArticleDto } from "@techblog/shared";
+import { ContentService } from "./clean-text.service.js";
 
 export class RawArticleService {
 	// CRUD operations for RawArticle
@@ -24,8 +25,27 @@ export class RawArticleService {
 					}
 
 					// Create a new article since it doesn't exist
-					await prisma.rawArticle.create({
+					const newArticle = await prisma.rawArticle.create({
 						data,
+					});
+
+					if (!newArticle) {
+						console.error(`Failed to create article for link: ${data.link}`);
+						return false; // Indicate failure for this article
+					}
+
+					const cleanedTitle = new ContentService().clean(newArticle.title);
+					const cleanedContent = new ContentService().clean(
+						newArticle.content || "",
+					);
+
+					await prisma.articleCandidate.create({
+						data: {
+							rawArticleId: newArticle.id,
+							cleanedTitle: cleanedTitle, // You can replace this with the cleaned title if you have a TitleService
+							embeddingText: cleanedTitle + " " + cleanedContent.slice(0, 300), // You can replace this with the cleaned title if you have a TitleService
+							status: "QUEUED",
+						},
 					});
 
 					console.log(`Saved article: ${data.title}`);
@@ -52,6 +72,7 @@ export class RawArticleService {
 			link: article.link,
 			guid: article.guid,
 			content: article.content ?? null,
+			summary: article.summary ?? null,
 			rawHtml: article.rawHtml ?? null,
 			author: article.author ?? null,
 			publishedAt: article.publishedAt ?? null,

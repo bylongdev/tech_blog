@@ -33,11 +33,12 @@ export class Fetcher implements IFetcher {
 			return [];
 		}
 
-		return feed.items.map((item) => ({
+		return feed.items.map((item: any) => ({
 			title: item.title || "",
 			link: item.link || "",
 			guid: item.guid || "",
 			content: item["content:encodedSnippet"] || "",
+			summary: item["content:summary"] || "",
 			rawHtml: item["content:encoded"] || "",
 			author: item.creator || "",
 			fetchedAt: new Date(),

@@ -43,10 +43,11 @@ model RawArticle {
   publishedAt DateTime?
   fetchedAt   DateTime  @default(now())
 
-  hash             String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  source           Source            @relation(fields: [sourceId], references: [id])
+  hash      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  source    Source   @relation(fields: [sourceId], references: [id])
+
   articleCandidate ArticleCandidate?
 
   @@unique([sourceId, guid])

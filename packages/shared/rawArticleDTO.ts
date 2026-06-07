@@ -3,6 +3,7 @@ export interface CreateRawArticleDto {
 	link: string;
 	guid: string;
 	content?: string;
+	summary?: string;
 	rawHtml?: string;
 	author?: string;
 	publishedAt?: Date;
