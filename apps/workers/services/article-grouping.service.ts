@@ -10,7 +10,7 @@ export class GroupingService {
 		const candidates = await prisma.articleCandidate.findMany({
 			where: {
 				status: "GROUPED",
-				groupingId: {
+				groupId: {
 					not: null,
 				},
 				embedding: {
@@ -34,7 +34,7 @@ export class GroupingService {
 				await tx.articleCandidate.update({
 					where: { id: articleId },
 					data: {
-						groupingId: newGroup.id,
+						groupId: newGroup.id,
 						status: "GROUPED",
 					},
 				});
@@ -68,7 +68,7 @@ export class GroupingService {
 				await tx.articleCandidate.update({
 					where: { id: articleId },
 					data: {
-						groupingId: newGroup.id,
+						groupId: newGroup.id,
 						status: "GROUPED",
 					},
 				});

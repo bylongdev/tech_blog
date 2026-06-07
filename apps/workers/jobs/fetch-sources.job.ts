@@ -6,6 +6,8 @@ import { RawArticleService } from "../services/raw-artice.service.js";
 import { FetchLogService } from "../services/fetch-log.service.js";
 
 async function fetchSources() {
+	let articleIds = [];
+
 	const sources = await prisma.source.findMany({
 		where: {
 			fetchType: "RSS",
@@ -43,6 +45,7 @@ async function fetchSources() {
 
 			// Save the fetched articles to the database
 			const result = await rawArticleService.saveMany(articles);
+
 			// Update the fetch log with the results of the fetch operation
 			await fetchLog.success(fetchLogId, {
 				itemsFound: result.processed,

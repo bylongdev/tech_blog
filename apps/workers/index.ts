@@ -8,6 +8,8 @@ async function main() {
 	// await fetchSources();
 
 	await embeddingJob("cmq3acgpp000644gdmuhv9805");
+	await embeddingJob("cmq3acgpp000744gd0d27lm52");
+	await embeddingJob("cmq3acgpp000844gdxbrlv5dm");
 }
 
 main()

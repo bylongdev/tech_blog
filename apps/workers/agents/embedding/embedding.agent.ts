@@ -40,6 +40,7 @@ export class EmbeddingAgent {
 
 		return {
 			candidateId: candidate.id,
+			vector,
 			vectorLength: vector.length,
 			status: "EMBEDDED",
 		};

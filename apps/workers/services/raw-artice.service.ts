@@ -34,6 +34,7 @@ export class RawArticleService {
 						return false; // Indicate failure for this article
 					}
 
+					// Create a corresponding ArticleCandidate for embedding and grouping
 					const cleanedTitle = new ContentService().clean(newArticle.title);
 					const cleanedContent = new ContentService().clean(
 						newArticle.content || "",
