@@ -10,5 +10,8 @@
 		"@techblog/database": "workspace:*",
 		"@techblog/shared": "workspace:*",
 		"rss-parser": "^3.13.0"
+	},
+	"devDependencies": {
+		"ioredis": "^5.11.1"
 	}
 }

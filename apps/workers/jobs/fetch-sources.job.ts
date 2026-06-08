@@ -6,8 +6,6 @@ import { RawArticleService } from "../services/raw-artice.service.js";
 import { FetchLogService } from "../services/fetch-log.service.js";
 
 async function fetchSources() {
-	let articleIds = [];
-
 	const sources = await prisma.source.findMany({
 		where: {
 			fetchType: "RSS",
