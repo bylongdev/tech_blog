@@ -1,6 +1,7 @@
 import { prisma } from "@techblog/database/src/client.js";
 import type { CreateRawArticleDto } from "@techblog/shared";
 import { ContentService } from "./clean-text.service.js";
+import { QueueProducer } from "../queues/producer.queue.js";
 
 export class RawArticleService {
 	// CRUD operations for RawArticle
@@ -40,7 +41,7 @@ export class RawArticleService {
 						newArticle.content || "",
 					);
 
-					await prisma.articleCandidate.create({
+					const articleCandidate = await prisma.articleCandidate.create({
 						data: {
 							rawArticleId: newArticle.id,
 							cleanedTitle: cleanedTitle, // You can replace this with the cleaned title if you have a TitleService
@@ -49,7 +50,16 @@ export class RawArticleService {
 						},
 					});
 
-					console.log(`Saved article: ${data.title}`);
+					// Add the article to the embedding queue
+					const queueProducer = new QueueProducer("embedding");
+					await queueProducer.add("embedding", {
+						articleCandidateId: articleCandidate.id,
+					});
+					await queueProducer.close();
+
+					console.log(
+						`Article is queued for embedding with candidate ID: ${articleCandidate.id}`,
+					);
 					return true; // Indicate success for this article
 				} catch (error) {
 					console.error("Error saving article:", error);

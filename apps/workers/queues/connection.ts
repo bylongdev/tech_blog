@@ -1,4 +1,3 @@
-import { Redis } from "ioredis";
 import dotenv from "dotenv";
 import path from "node:path";
 
@@ -7,9 +6,10 @@ dotenv.config({
 	path: path.resolve(process.cwd(), "../../.env"),
 });
 
-export const redis = new Redis({
-	host: process.env.REDIS_HOST,
-	port: Number(process.env.REDIS_PORT),
+// This file is responsible for setting up the connection to Redis for the worker queues.
+export const redisConfig = {
+	host: process.env.REDIS_HOST ?? "localhost",
+	port: Number(process.env.REDIS_PORT) ?? 6379,
 
-	maxRetriesPerRequest: null,
-});
+	maxRetriesPerRequest: null, // Disable retries to wait for Redis if it is down
+};
