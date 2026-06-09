@@ -5,6 +5,7 @@ import { ContentService } from "../../services/clean-text.service.js";
 import { QueueProducer } from "../producer.queue.js";
 
 import { prisma } from "@techblog/database/src/client.js";
+import { embeddingJob } from "../../jobs/embedding.job.js";
 
 new Worker(
 	"embedding",
@@ -14,9 +15,7 @@ new Worker(
 				await registerCandidate(job);
 				break;
 			case "create_embedding":
-				// Handle the create_embedding job here
-				console.log("Received create_embedding job:", job.data);
-				// You can implement the logic to create embeddings for the article candidate here
+				await embedding(job.data.articleCandidateId);
 				break;
 
 			default:
@@ -64,4 +63,9 @@ async function registerCandidate(job: any) {
 	}
 }
 
-async function embedding() {}
+async function embedding(articleCandidateId: string) {
+	console.log(
+		`Processing embedding for articleCandidateId: ${articleCandidateId}`,
+	);
+	await embeddingJob(articleCandidateId);
+}

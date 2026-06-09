@@ -48,6 +48,10 @@ export class GroupingService {
 
 		// If no good match is found, create a new group for this article
 		if (!bestMatch || bestScore < GROUP_THRESHOLD) {
+			console.log(
+				`No good match found for article ${articleId}. Creating new group.`,
+			);
+
 			const group = await prisma.$transaction(async (tx) => {
 				const newGroup = await tx.articleGroup.create({
 					data: {},
@@ -70,6 +74,13 @@ export class GroupingService {
 				score: bestScore === -1 ? null : bestScore,
 			};
 		}
+
+		console.log(
+			`Best match for article ${articleId}:`,
+			bestMatch.id,
+			"with score:",
+			bestScore,
+		);
 
 		// If a good match is found, group the current article with the best match's group
 		await prisma.articleCandidate.update({
