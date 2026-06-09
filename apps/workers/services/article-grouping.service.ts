@@ -3,12 +3,18 @@ import { prisma } from "@techblog/database/src/client.js";
 import { cosineSimilarity } from "../utils/cosine-similarity.js";
 
 const GROUP_THRESHOLD = 0.9;
+const RECENT_DAYS = 7;
 
 export class GroupingService {
 	// Find the best match for the current article based on embedding similarity
 	async findBestMatch(articleId: string, currentVector: number[]) {
+		const recentDate = new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000);
+
 		const candidates = await prisma.articleCandidate.findMany({
 			where: {
+				id: {
+					not: articleId,
+				},
 				status: "GROUPED",
 				groupId: {
 					not: null,
@@ -17,20 +23,36 @@ export class GroupingService {
 					not: Prisma.JsonNull,
 				},
 				createdAt: {
-					gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-				}, // Only consider candidates created in the last 7 days
+					gte: recentDate,
+				},
 			},
 		});
 
-		if (!candidates || candidates.length === 0) {
-			// No candidates available, create a new group for this article
+		let bestMatch: (typeof candidates)[number] | null = null; // TypeScript infers the type of bestMatch based on the candidates array
+		let bestScore = -1;
+
+		// Iterate through candidates to find the one with the highest cosine similarity
+		for (const candidate of candidates) {
+			const embedding = candidate.embedding as number[];
+
+			if (!Array.isArray(embedding)) continue;
+			if (embedding.length !== currentVector.length) continue;
+
+			const score = cosineSimilarity(currentVector, embedding);
+
+			if (score > bestScore) {
+				bestScore = score;
+				bestMatch = candidate;
+			}
+		}
+
+		// If no good match is found, create a new group for this article
+		if (!bestMatch || bestScore < GROUP_THRESHOLD) {
 			const group = await prisma.$transaction(async (tx) => {
-				// Create new group
 				const newGroup = await tx.articleGroup.create({
 					data: {},
 				});
 
-				// Update candidate with new group ID and status
 				await tx.articleCandidate.update({
 					where: { id: articleId },
 					data: {
@@ -42,65 +64,27 @@ export class GroupingService {
 				return newGroup;
 			});
 
-			// Return action indicating a new group was created
 			return {
 				action: "CREATED_GROUP",
 				groupId: group.id,
-				score: 1,
+				score: bestScore === -1 ? null : bestScore,
 			};
 		}
 
-		// Calculate cosine similarity between current vector and candidate vectors
-		const similarities = candidates.map((candidate) => {
-			return cosineSimilarity(currentVector, candidate.embedding as number[]);
+		// If a good match is found, group the current article with the best match's group
+		await prisma.articleCandidate.update({
+			where: { id: articleId },
+			data: {
+				groupId: bestMatch.groupId,
+				status: "GROUPED",
+			},
 		});
 
-		// Find the candidate with the highest similarity
-		const maxSimilarity = Math.max(...similarities);
-
-		// If the highest similarity is below the threshold, create a new group
-		if (maxSimilarity < GROUP_THRESHOLD) {
-			const group = await prisma.$transaction(async (tx) => {
-				const newGroup = await tx.articleGroup.create({
-					data: {},
-				});
-
-				await tx.articleCandidate.update({
-					where: { id: articleId },
-					data: {
-						groupId: newGroup.id,
-						status: "GROUPED",
-					},
-				});
-
-				return newGroup;
-			});
-
-			return {
-				action: "CREATED_GROUP",
-				groupId: group.id,
-				score: maxSimilarity,
-			};
-		} else {
-			// If the highest similarity is above the threshold, group with the best match
-			const bestMatchIndex = similarities.findIndex(
-				(similarity) => similarity === maxSimilarity,
-			);
-			const bestMatchCandidate = candidates[bestMatchIndex];
-
-			await prisma.articleCandidate.update({
-				where: { id: articleId },
-				data: {
-					groupId: bestMatchCandidate?.groupId,
-					status: "GROUPED",
-				},
-			});
-
-			return {
-				action: "GROUPED_WITH_EXISTING",
-				groupId: bestMatchCandidate?.groupId,
-				score: maxSimilarity,
-			};
-		}
+		return {
+			action: "GROUPED_WITH_EXISTING",
+			groupId: bestMatch.groupId,
+			score: bestScore,
+			matchedCandidateId: bestMatch.id,
+		};
 	}
 }

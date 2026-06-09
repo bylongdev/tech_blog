@@ -63,3 +63,5 @@ async function registerCandidate(job: any) {
 		console.error("Error processing register_candidate job:", error);
 	}
 }
+
+async function embedding() {}
