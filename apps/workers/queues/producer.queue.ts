@@ -1,9 +1,11 @@
 import { Queue } from "bullmq";
 import { redisConfig } from "./connection.js";
 
-class QueueProducer extends Queue {
-	constructor(title?: string) {
-		super(title || "unknown", {
+class QueueProducer {
+	private readonly queue: Queue;
+
+	constructor(name: string) {
+		this.queue = new Queue(name, {
 			connection: redisConfig,
 			defaultJobOptions: {
 				removeOnComplete: true,
@@ -12,12 +14,12 @@ class QueueProducer extends Queue {
 		});
 	}
 
-	getTitle() {
-		return this.name;
+	async add(jobName: string, data: unknown) {
+		return this.queue.add(jobName, data);
 	}
 
 	async close() {
-		await this.close();
+		await this.queue.close();
 	}
 }
 
