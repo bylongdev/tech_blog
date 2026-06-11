@@ -70,6 +70,7 @@ export class RawArticleService {
 			summary: article.summary ?? null,
 			rawHtml: article.rawHtml ?? null,
 			author: article.author ?? null,
+			imageUrl: article.imageUrl ?? [],
 			publishedAt: article.publishedAt ?? null,
 			fetchedAt: article.fetchedAt,
 		};

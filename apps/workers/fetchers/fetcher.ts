@@ -36,7 +36,12 @@ export class Fetcher implements IFetcher {
 		// Extract image URLs from the raw HTML content of the article
 		const getImages = (rawHtml: string) =>
 			rawHtml.match(/<img[^>]+src="([^">]+)"/g)?.map((imgTag: string) => {
+				console.log("Processing img tag:", imgTag);
 				const srcMatch = imgTag.match(/src="([^">]+)"/);
+				console.log(
+					"Extracted image URL:",
+					srcMatch ? srcMatch[1] : "No match",
+				);
 				return srcMatch ? srcMatch[1] : null;
 			}) || [];
 
@@ -48,7 +53,7 @@ export class Fetcher implements IFetcher {
 			summary: item["content:summary"] || "",
 			rawHtml: item["content:encoded"] || "",
 			author: item.creator || "",
-			imageUrl: getImages(item["content:encoded"] || ""),
+			imageUrl: getImages(item["content:encoded"] || []),
 			fetchedAt: new Date(),
 			sourceId: this.sourceId,
 			...(item.pubDate && {

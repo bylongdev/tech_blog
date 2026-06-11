@@ -39,7 +39,7 @@ model RawArticle {
   content     String?
   rawHtml     String?
   author      String?
-  imageUrl    String?
+  imageUrl    String[]
   publishedAt DateTime?
   fetchedAt   DateTime  @default(now())
 

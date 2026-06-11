@@ -6,7 +6,7 @@ export interface CreateRawArticleDto {
 	summary?: string;
 	rawHtml?: string;
 	author?: string;
-	imageUrl?: string[];
+	imageUrl: string[];
 	publishedAt?: Date;
 	sourceId: string;
 	fetchedAt: Date;
