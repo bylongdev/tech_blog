@@ -12,15 +12,15 @@ export class EmbeddingAgent {
 	private embeddingService = new EmbeddingService();
 
 	// Process one candidate by ID
-	async process(rawArticleId: string) {
+	async process(candidateId: string) {
 		// Step 1: Fetch candidate from DB
 		const candidate = await prisma.articleCandidate.findUnique({
-			where: { rawArticleId },
+			where: { id: candidateId },
 		});
 
 		if (!candidate) {
 			throw new Error(
-				`ArticleCandidate not found for rawArticleId: ${rawArticleId}`,
+				`ArticleCandidate not found for candidateId: ${candidateId}`,
 			);
 		}
 

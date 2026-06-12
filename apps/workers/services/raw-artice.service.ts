@@ -35,31 +35,15 @@ export class RawArticleService {
 						return false; // Indicate failure for this article
 					}
 
-					// Create a corresponding ArticleCandidate for embedding and grouping
-					const cleanedTitle = new ContentService().clean(newArticle.title);
-					const cleanedContent = new ContentService().clean(
-						newArticle.content || "",
-					);
-
-					const articleCandidate = await prisma.articleCandidate.create({
-						data: {
-							rawArticleId: newArticle.id,
-							cleanedTitle: cleanedTitle, // You can replace this with the cleaned title if you have a TitleService
-							embeddingText: cleanedTitle + " " + cleanedContent.slice(0, 300), // You can replace this with the cleaned title if you have a TitleService
-							status: "QUEUED",
-						},
-					});
-
-					// Add the article to the embedding queue
+					// After successfully saving the article, add it to the register_candidate queue
 					const queueProducer = new QueueProducer("embedding");
-					await queueProducer.add("embedding", {
-						articleCandidateId: articleCandidate.id,
+					await queueProducer.add("register_candidate", {
+						rawArticleId: newArticle.id,
+						title: newArticle.title,
+						content: newArticle.content?.slice(0, 300) || "",
 					});
-					await queueProducer.close();
+					await queueProducer.close(); // Close the producer after adding the job
 
-					console.log(
-						`Article is queued for embedding with candidate ID: ${articleCandidate.id}`,
-					);
 					return true; // Indicate success for this article
 				} catch (error) {
 					console.error("Error saving article:", error);
