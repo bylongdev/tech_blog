@@ -3,13 +3,22 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 		throw new Error("Vectors must have the same length");
 	}
 
-	// Calculate dot product and magnitudes
-	const dot = a.reduce((sum, value, index) => sum + value * (b[index] ?? 0), 0);
-	const magA = Math.sqrt(a.reduce((sum, value) => sum + value * value, 0));
-	const magB = Math.sqrt(b.reduce((sum, value) => sum + value * value, 0));
+	let dot = 0;
+	let magA = 0;
+	let magB = 0;
 
-	// Handle edge case where magnitude is zero
-	if (magA === 0 || magB === 0) return 0;
+	for (let i = 0; i < a.length; i++) {
+		const av = a[i]!;
+		const bv = b[i]!;
 
-	return dot / (magA * magB);
+		dot += av * bv;
+		magA += av * av;
+		magB += bv * bv;
+	}
+
+	if (magA === 0 || magB === 0) {
+		return 0;
+	}
+
+	return dot / (Math.sqrt(magA) * Math.sqrt(magB));
 }

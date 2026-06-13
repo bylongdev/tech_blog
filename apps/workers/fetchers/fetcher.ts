@@ -35,13 +35,11 @@ export class Fetcher implements IFetcher {
 
 		// Extract image URLs from the raw HTML content of the article
 		const getImages = (rawHtml: string) =>
+			// Use regex to find all img tags and extract their src attributes
 			rawHtml.match(/<img[^>]+src="([^">]+)"/g)?.map((imgTag: string) => {
-				console.log("Processing img tag:", imgTag);
+				// Extract the src attribute value from the img tag
 				const srcMatch = imgTag.match(/src="([^">]+)"/);
-				console.log(
-					"Extracted image URL:",
-					srcMatch ? srcMatch[1] : "No match",
-				);
+
 				return srcMatch ? srcMatch[1] : null;
 			}) || [];
 

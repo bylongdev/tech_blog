@@ -40,7 +40,7 @@ export class RawArticleService {
 					await queueProducer.add("register_candidate", {
 						rawArticleId: newArticle.id,
 						title: newArticle.title,
-						content: newArticle.content?.slice(0, 300) || "",
+						content: newArticle.content?.slice(0, 6000) || "",
 					});
 					await queueProducer.close(); // Close the producer after adding the job
 

@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@techblog/database": "workspace:*",
 		"@techblog/shared": "workspace:*",
+		"openai": "^6.42.0",
 		"rss-parser": "^3.13.0"
 	},
 	"devDependencies": {
