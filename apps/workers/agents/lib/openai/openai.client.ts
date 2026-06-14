@@ -20,7 +20,7 @@ class OpenAIClient {
 	}
 
 	// Method to create embeddings using the OpenAI API
-	async createEmbedding(input: string | string[], model: string) {
+	/* async createEmbedding(input: string | string[], model: string) {
 		try {
 			// Validate input before making the API call
 			if (!input || (Array.isArray(input) && input.length === 0)) {
@@ -43,7 +43,7 @@ class OpenAIClient {
 			console.error("Error creating embedding:", error);
 			throw error;
 		}
-	}
+	} */
 }
 
 export const openAIClient = new OpenAIClient();

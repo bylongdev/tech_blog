@@ -70,8 +70,21 @@ model ArticleCandidate {
 
   status CandidateStatus @default(QUEUED)
 
+  concepts ArticleConcept[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model ArticleConcept {
+  id String @id @default(cuid())
+
+  articleId String
+  conceptId String
+
+  article ArticleCandidate @relation(fields: [articleId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 model ArticleGroup {
@@ -112,8 +125,15 @@ enum FetchType {
   API
 }
 
+enum ConceptStatus {
+  RAW
+  FILTERED
+  EMBEDDED
+}
+
 enum CandidateStatus {
   QUEUED
+  EXTRACTED
   EMBEDDED
   GROUPED
   PROCESSED
