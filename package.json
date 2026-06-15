@@ -12,7 +12,8 @@
 		"wk:source:register": "pnpm --filter @techblog/worker source:register",
 		"db:studio": "pnpm --filter @techblog/database prisma studio",
 		"db:generate": "pnpm --filter @techblog/database prisma generate",
-		"db:migrate": "pnpm --filter @techblog/database prisma migrate dev"
+		"db:migrate": "pnpm --filter @techblog/database prisma migrate dev",
+		"db:reset": "pnpm --filter @techblog/database prisma migrate reset"
 	},
 	"keywords": [],
 	"author": "",

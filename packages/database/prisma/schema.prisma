@@ -63,32 +63,30 @@ model ArticleCandidate {
 
   cleanedTitle  String
   embeddingText String
-  embedding     Json?
+  embedding     Unsupported("vector(768)")?
 
   groupId String?
   group   ArticleGroup? @relation(fields: [groupId], references: [id])
 
-  status CandidateStatus @default(QUEUED)
+  representativeGroupId String?
+  representativeGroup   ArticleGroup? @relation("RepresentativeArticles", fields: [representativeGroupId], references: [id])
 
-  concepts ArticleConcept[]
+  status CandidateStatus @default(QUEUED)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
 
-model ArticleConcept {
-  id String @id @default(cuid())
-
-  articleId String
-  conceptId String
-
-  article ArticleCandidate @relation(fields: [articleId], references: [id])
-
-  createdAt DateTime @default(now())
+  @@index([groupId])
 }
 
 model ArticleGroup {
-  id         String             @id @default(uuid())
+  id String @id @default(cuid())
+
+  centroid Unsupported("vector(768)")?
+  size     Int                         @default(1)
+
+  representativeArticles ArticleCandidate[] @relation("RepresentativeArticles")
+
   candidates ArticleCandidate[]
 
   createdAt DateTime @default(now())

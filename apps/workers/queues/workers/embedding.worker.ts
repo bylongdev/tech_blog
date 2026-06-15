@@ -39,13 +39,27 @@ async function registerCandidate(job: any) {
 		const contentService = new ContentService();
 		const cleanedTitle = contentService.clean(job.data.title);
 		const cleanedContent = contentService.clean(job.data.content || "");
+		const summary = job.data.summary
+			? contentService.clean(job.data.summary)
+			: null;
+
+		// Combine cleaned title and content for embedding
+		const embeddingText = [
+			`Title: ${cleanedTitle}`,
+			summary ? `Summary: ${summary}` : "",
+			cleanedContent && cleanedContent.length >= 300
+				? `Lead: ${cleanedContent.slice(0, 800)}`
+				: "",
+		]
+			.filter(Boolean)
+			.join("\n");
 
 		// Create a new ArticleCandidate for embedding and grouping
 		const candidate = await prisma.articleCandidate.create({
 			data: {
 				rawArticleId: rawArticleId,
 				cleanedTitle: cleanedTitle, // You can replace this with the cleaned title if you have a TitleService
-				embeddingText: cleanedTitle + " " + cleanedContent, // You can replace this with the cleaned title if you have a TitleService
+				embeddingText: embeddingText, // You can replace this with the cleaned title if you have a TitleService
 				status: "QUEUED",
 			},
 		});

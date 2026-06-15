@@ -1,8 +1,7 @@
-/* import { openAIClient } from "../agents/lib/openai/openai.client.js";
-import { ollamaClient } from "../agents/lib/ollama/ollama.client.js";
+import { openAIClient } from "../agents/lib/openai/openai.client.js";
 export class EmbeddingService {
 	// Create embedding vector from text using Ollama API
-	async createEmbedding(text: string): Promise<string> {
+	async createEmbedding(text: string): Promise<number[]> {
 		const model =
 			process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
 		const response = await openAIClient.createEmbedding(text, model);
@@ -15,4 +14,3 @@ export class EmbeddingService {
 		return response[0]?.embedding || [];
 	}
 }
- */
