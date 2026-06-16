@@ -43,7 +43,7 @@ export class Fetcher implements IFetcher {
 				return srcMatch ? srcMatch[1] : null;
 			}) || [];
 
-		return feed.items.map((item: any) => ({
+		return feed.items.slice(0, 20).map((item: any) => ({
 			title: item.title || "",
 			link: item.link || "",
 			guid: item.guid || "",

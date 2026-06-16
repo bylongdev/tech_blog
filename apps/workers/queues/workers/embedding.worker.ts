@@ -44,13 +44,7 @@ async function registerCandidate(job: any) {
 			: null;
 
 		// Combine cleaned title and content for embedding
-		const embeddingText = [
-			`Title: ${cleanedTitle}`,
-			summary ? `Summary: ${summary}` : "",
-			cleanedContent && cleanedContent.length >= 300
-				? `Lead: ${cleanedContent.slice(0, 800)}`
-				: "",
-		]
+		const embeddingText = [`${cleanedTitle}`, `${cleanedContent.slice(0, 800)}`]
 			.filter(Boolean)
 			.join("\n");
 

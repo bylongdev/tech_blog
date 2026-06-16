@@ -27,16 +27,27 @@ class OpenAIClient {
 				throw new Error("Input for embedding cannot be empty.");
 			}
 
+			console.log(
+				`Creating embedding for input: ${Array.isArray(input) ? input.slice(0, 5) : input}... using model: ${model}`,
+			);
+
 			// Make the API call to create embeddings
 			const response = await this.client.embeddings.create({
 				input,
 				model,
 			});
 
+			console.log("Embedding response received from OpenAI API.");
+
 			// Validate response from the API
 			if (!response || !response.data || response.data.length === 0) {
 				throw new Error("No embedding data returned from OpenAI API.");
 			}
+
+			// Return the embedding vector from the response
+			console.log(
+				`Embedding vector created with length: ${response.data[0]?.embedding.length}`,
+			);
 
 			return response.data;
 		} catch (error) {

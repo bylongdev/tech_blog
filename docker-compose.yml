@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg17
+    image: postgres:17
     container_name: techblog-postgres
     environment:
       POSTGRES_USER: admin

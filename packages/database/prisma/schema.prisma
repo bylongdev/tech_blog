@@ -63,7 +63,7 @@ model ArticleCandidate {
 
   cleanedTitle  String
   embeddingText String
-  embedding     Unsupported("vector(768)")?
+  embedding     Json?
 
   groupId String?
   group   ArticleGroup? @relation(fields: [groupId], references: [id])
@@ -82,8 +82,8 @@ model ArticleCandidate {
 model ArticleGroup {
   id String @id @default(cuid())
 
-  centroid Unsupported("vector(768)")?
-  size     Int                         @default(1)
+  centroid Json?
+  size     Int   @default(1)
 
   representativeArticles ArticleCandidate[] @relation("RepresentativeArticles")
 
