@@ -11,8 +11,8 @@ export async function embeddingJob(candidateId: string) {
 
 		const res = await agent.process(candidateId);
 
-		const groupingService = new GroupingService();
-		await groupingService.findBestMatch(res.candidateId, res.vector); // Example of how to call grouping service after embedding
+		// const groupingService = new GroupingService();
+		// await groupingService.findBestMatch(res.candidateId, res.vector); // Example of how to call grouping service after embedding
 	} catch (error) {
 		console.error("Error in embedding job:", error);
 	}

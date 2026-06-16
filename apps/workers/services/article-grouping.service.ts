@@ -7,7 +7,7 @@ const RECENT_DAYS = 7;
 
 export class GroupingService {
 	// Find the best match for the current article based on embedding similarity
-	async findBestMatch(articleId: string, currentVector: number[]) {
+	/* async findBestMatch(articleId: string, currentVector: number[]) {
 		const recentDate = new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000);
 
 		const candidates = await prisma.articleCandidate.findMany({
@@ -97,5 +97,66 @@ export class GroupingService {
 			score: bestScore,
 			matchedCandidateId: bestMatch.id,
 		};
+	} */
+
+	public articleId: string;
+	public currentVector: number[];
+
+	constructor(articleId: string, currentVector: number[]) {
+		this.articleId = articleId;
+		this.currentVector = currentVector;
+	}
+
+	private async get_candidate() {
+		// Fetch the candidate from the database using Prisma
+		const candidate = await prisma.articleCandidate.findFirst({
+			where: {
+				id: this.articleId,
+			},
+		});
+
+		if (!candidate) {
+			throw new Error(`Candidate with ID ${this.articleId} not found`);
+		}
+
+		return candidate;
+	}
+
+	//
+	async findBestMatch() {
+		const candidate = await this.get_candidate();
+
+		// Get all article groups with their candidates and embeddings
+		const articleGroups = await prisma.articleGroup.findMany({
+			include: {
+				candidates: true,
+			},
+		});
+
+		if (articleGroups.length === 0) {
+			console.log("No article groups found.");
+
+			await prisma.articleGroup.create({
+				data: {
+					centroid: this.currentVector,
+					representativeArticles: {
+						connect: { id: candidate.id },
+					},
+					candidates: {
+						connect: { id: candidate.id },
+					},
+				},
+			});
+
+			console.log(
+				`Created new group for article ${candidate.id} as the first member.`,
+			);
+
+			return;
+		}
+
+		console.log(articleGroups);
+
+		return;
 	}
 }
