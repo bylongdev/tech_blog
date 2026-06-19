@@ -82,9 +82,6 @@ model ArticleCandidate {
 model ArticleGroup {
   id String @id @default(cuid())
 
-  centroid Json?
-  size     Int   @default(1)
-
   representativeArticles ArticleCandidate[] @relation("RepresentativeArticles")
 
   candidates ArticleCandidate[]

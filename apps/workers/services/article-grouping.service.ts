@@ -2,7 +2,7 @@ import { Prisma } from "@techblog/database/generated/prisma/client.js";
 import { prisma } from "@techblog/database/src/client.js";
 import { cosineSimilarity } from "../utils/cosine-similarity.js";
 
-const GROUP_THRESHOLD = 0.9;
+const GROUP_THRESHOLD = 0.86;
 const RECENT_DAYS = 7;
 
 export class GroupingService {
@@ -100,11 +100,9 @@ export class GroupingService {
 	} */
 
 	public articleId: string;
-	public currentVector: number[];
 
-	constructor(articleId: string, currentVector: number[]) {
+	constructor(articleId: string) {
 		this.articleId = articleId;
-		this.currentVector = currentVector;
 	}
 
 	private async get_candidate() {
@@ -122,40 +120,111 @@ export class GroupingService {
 		return candidate;
 	}
 
-	//
+	updateCentroid(
+		centroid: number[] | undefined,
+		size: number,
+		vector: number[],
+	): number[] {
+		if (!centroid) {
+			return vector;
+		}
+		return centroid.map((v, i) =>
+			vector[i] ? (v * size + vector[i]) / (size + 1) : v,
+		);
+	}
+
+	// KNN style grouping: For each new article, find the most similar existing group and update that group with the new article's vector
 	async findBestMatch() {
 		const candidate = await this.get_candidate();
 
-		// Get all article groups with their candidates and embeddings
-		const articleGroups = await prisma.articleGroup.findMany({
-			include: {
-				candidates: true,
+		const candidates = await prisma.articleCandidate.findMany({
+			select: {
+				id: true,
+				embedding: true,
+				groupId: true,
 			},
 		});
 
-		if (articleGroups.length === 0) {
-			console.log("No article groups found.");
+		let bestMatch: (typeof candidates)[number] | null = null;
+		let bestScore = -1;
 
-			await prisma.articleGroup.create({
-				data: {
-					centroid: this.currentVector,
-					representativeArticles: {
-						connect: { id: candidate.id },
-					},
-					candidates: {
-						connect: { id: candidate.id },
-					},
-				},
-			});
+		for (const c of candidates) {
+			if (c.id === this.articleId) continue;
+			if (!c.embedding) continue;
 
-			console.log(
-				`Created new group for article ${candidate.id} as the first member.`,
+			const embedding = c.embedding as number[];
+
+			if (embedding.length !== (candidate.embedding as number[]).length)
+				continue;
+
+			const score = cosineSimilarity(
+				candidate.embedding as number[],
+				embedding,
 			);
-
-			return;
+			if (score > bestScore) {
+				bestScore = score;
+				bestMatch = c;
+			}
 		}
 
-		console.log(articleGroups);
+		await prisma.$transaction(async (tx) => {
+			if (!bestMatch || bestScore < GROUP_THRESHOLD) {
+				console.log(
+					`No good match found for article ${this.articleId}. Creating new group.`,
+				);
+				// Create a new group for this article
+				const newGroup = await tx.articleGroup.create({
+					data: {},
+				});
+
+				// Update the candidate's groupId to the new groupId
+				await tx.articleCandidate.update({
+					where: { id: this.articleId },
+					data: {
+						groupId: newGroup.id,
+						status: "GROUPED",
+					},
+				});
+			} else {
+				if (bestMatch.groupId) {
+					// Update the candidate's groupId to match the best match's groupId
+					await tx.articleCandidate.update({
+						where: { id: this.articleId },
+						data: {
+							groupId: bestMatch.groupId,
+							status: "GROUPED",
+						},
+					});
+				} else {
+					// If the best match doesn't have a groupId, create a new group and assign both articles to that group
+
+					// Create a new group
+					const newGroup = await tx.articleGroup.create({
+						data: {},
+					});
+
+					// Update both the current article and the best match to belong to the new group
+					await tx.articleCandidate.updateMany({
+						where: {
+							id: {
+								in: [this.articleId, bestMatch.id],
+							},
+						},
+						data: {
+							groupId: newGroup.id,
+							status: "GROUPED",
+						},
+					});
+				}
+			}
+		});
+
+		console.log(
+			`Best match for article ${this.articleId}:`,
+			bestMatch?.id,
+			"with score:",
+			bestScore,
+		);
 
 		return;
 	}

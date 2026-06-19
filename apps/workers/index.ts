@@ -9,11 +9,16 @@ async function main() {
 	// await registerSources();
 	// await fetchSources();
 
-	const groupingService = new GroupingService(
-		"cmqgoy0ir000krcgds8v49yks",
-		vector,
-	);
-	groupingService.findBestMatch();
+	const candidates = await prisma.articleCandidate.findMany({
+		select: {
+			id: true,
+		},
+	});
+
+	for (const candidate of candidates) {
+		const groupingService = new GroupingService(candidate.id, vector);
+		await groupingService.findBestMatch();
+	}
 }
 
 main()
