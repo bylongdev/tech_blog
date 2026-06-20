@@ -68,9 +68,6 @@ model ArticleCandidate {
   groupId String?
   group   ArticleGroup? @relation(fields: [groupId], references: [id])
 
-  representativeGroupId String?
-  representativeGroup   ArticleGroup? @relation("RepresentativeArticles", fields: [representativeGroupId], references: [id])
-
   status CandidateStatus @default(QUEUED)
 
   createdAt DateTime @default(now())
@@ -81,8 +78,6 @@ model ArticleCandidate {
 
 model ArticleGroup {
   id String @id @default(cuid())
-
-  representativeArticles ArticleCandidate[] @relation("RepresentativeArticles")
 
   candidates ArticleCandidate[]
 
