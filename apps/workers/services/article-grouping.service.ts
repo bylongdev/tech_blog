@@ -137,6 +137,7 @@ export class GroupingService {
 	async findBestMatch() {
 		const candidate = await this.get_candidate();
 
+		// Fetch all candidates that are not the current article and have an embedding
 		const candidates = await prisma.articleCandidate.findMany({
 			select: {
 				id: true,
@@ -145,6 +146,7 @@ export class GroupingService {
 			},
 		});
 
+		// Initialize variables to keep track of the best match and its score
 		let bestMatch: (typeof candidates)[number] | null = null;
 		let bestScore = -1;
 
@@ -154,6 +156,15 @@ export class GroupingService {
 
 			const embedding = c.embedding as number[];
 
+			// Skip if either embedding is empty or if they have different dimensions
+			if (
+				!embedding.length ||
+				!candidate.embedding ||
+				!(candidate.embedding as number[]).length
+			)
+				continue;
+
+			// Ensure both embeddings have the same length before calculating cosine similarity
 			if (embedding.length !== (candidate.embedding as number[]).length)
 				continue;
 
@@ -195,6 +206,10 @@ export class GroupingService {
 							status: "GROUPED",
 						},
 					});
+
+					console.log(
+						`Grouped article ${this.articleId} with existing group ${bestMatch.groupId} (best match: ${bestMatch.id}, score: ${bestScore})`,
+					);
 				} else {
 					// If the best match doesn't have a groupId, create a new group and assign both articles to that group
 
@@ -215,16 +230,12 @@ export class GroupingService {
 							status: "GROUPED",
 						},
 					});
+					console.log(
+						`Grouped article ${this.articleId} with new group ${newGroup.id} (best match: ${bestMatch.id}, score: ${bestScore})`,
+					);
 				}
 			}
 		});
-
-		console.log(
-			`Best match for article ${this.articleId}:`,
-			bestMatch?.id,
-			"with score:",
-			bestScore,
-		);
 
 		return;
 	}
