@@ -3,22 +3,22 @@ import { fetchSources } from "./jobs/fetch-sources.job.js";
 import { prisma } from "@techblog/database/src/client.js";
 import { GroupingService } from "./services/article-grouping.service.js";
 
-const vector = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]; // Example vector for testing
+import Parser from "rss-parser";
+const parser = new Parser();
 
 async function main() {
-	/* 	await registerSources();
-	await fetchSources(); */
+	await registerSources();
+	await fetchSources();
 
-	const candidates = await prisma.articleCandidate.findMany({
-		select: {
-			id: true,
-		},
-	});
+	/* 	(async () => {
+		let feed = await parser.parseURL("https://docker.com/feed/");
+		feed.items.forEach((item) => {
+			console.log(`${Object.keys(item)}`);
 
-	for (const candidate of candidates) {
-		const groupingService = new GroupingService(candidate.id);
-		await groupingService.findBestMatch();
-	}
+			return;
+		});
+	})();
+	*/
 }
 
 main()

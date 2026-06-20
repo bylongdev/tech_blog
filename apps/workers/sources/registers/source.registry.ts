@@ -4,6 +4,7 @@ import { openaiSource } from "../openai.source.js";
 import { githubSource } from "../github.source.js";
 import { techcrunchSource } from "../techcrunch.source.js";
 import { anthropicSource } from "../anthropic.source.js";
+import { dockerSource } from "../docker.source.js";
 
 export type SourceConfig = {
 	slug: string;
@@ -19,4 +20,5 @@ export const SOURCES: SourceConfig[] = [
 	githubSource,
 	techcrunchSource,
 	anthropicSource,
+	dockerSource,
 ];

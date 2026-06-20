@@ -25,6 +25,8 @@ export class RawArticleService {
 						return false; // Indicate success for this article (already exists)
 					}
 
+					console.log(`Saving new article! Link: ${data.link}`);
+
 					// Create a new article since it doesn't exist
 					const newArticle = await prisma.rawArticle.create({
 						data,
@@ -35,6 +37,8 @@ export class RawArticleService {
 						return false; // Indicate failure for this article
 					}
 
+					console.log(`Successfully created article! Link: ${data.link}`);
+
 					// After successfully saving the article, add it to the register_candidate queue
 					const queueProducer = new QueueProducer("embedding");
 					await queueProducer.add("register_candidate", {
@@ -43,6 +47,8 @@ export class RawArticleService {
 						content: newArticle.content?.slice(0, 800) || "",
 					});
 					await queueProducer.close(); // Close the producer after adding the job
+
+					console.log(`Added article to embedding queue! Link: ${data.link}`);
 
 					return true; // Indicate success for this article
 				} catch (error) {
