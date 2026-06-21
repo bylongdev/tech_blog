@@ -8,11 +8,7 @@ export async function embeddingJob(candidateId: string) {
 
 	try {
 		const agent = new EmbeddingAgent();
-
-		const res = await agent.process(candidateId);
-
-		// const groupingService = new GroupingService();
-		// await groupingService.findBestMatch(res.candidateId, res.vector); // Example of how to call grouping service after embedding
+		await agent.process(candidateId); // This will create the embedding and update the candidate status to "EMBEDDED"
 	} catch (error) {
 		console.error("Error in embedding job:", error);
 	}

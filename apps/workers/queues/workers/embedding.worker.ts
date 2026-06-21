@@ -6,6 +6,7 @@ import { QueueProducer } from "../producer.queue.js";
 
 import { prisma } from "@techblog/database/src/client.js";
 import { embeddingJob } from "../../jobs/embedding.job.js";
+import { GroupingService } from "../../services/article-grouping.service.js";
 
 new Worker(
 	"embedding",
@@ -16,6 +17,9 @@ new Worker(
 				break;
 			case "create_embedding":
 				await embedding(job.data.articleCandidateId);
+				break;
+			case "find_best_match":
+				await grouping(job.data.candidateId, job.data.vector);
 				break;
 
 			default:
@@ -76,4 +80,15 @@ async function embedding(articleCandidateId: string) {
 		`Processing embedding for articleCandidateId: ${articleCandidateId}`,
 	);
 	await embeddingJob(articleCandidateId);
+}
+
+async function grouping(candidateId: string, vector: number[]) {
+	console.log(
+		`Processing grouping for candidateId: ${candidateId} with vector length: ${vector.length}`,
+	);
+
+	const groupingService = new GroupingService(candidateId);
+	await groupingService.findBestMatch(); // Pass the embedding vector to the grouping service to find the best match and group articles accordingly
+
+	console.log(`Completed grouping for candidateId: ${candidateId}`);
 }

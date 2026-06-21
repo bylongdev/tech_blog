@@ -19,6 +19,10 @@ export class GroupingService {
 			where: {
 				id: this.articleId,
 			},
+			select: {
+				id: true,
+				embedding: true,
+			},
 		});
 
 		if (!candidate) {
@@ -35,6 +39,12 @@ export class GroupingService {
 
 		// Fetch all candidates that are not the current article and have an embedding
 		const candidates = await prisma.articleCandidate.findMany({
+			where: {
+				status: "GROUPED", // Only consider already grouped articles for matching
+				createdAt: {
+					gte: new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000), // Only consider articles created within the last RECENT_DAYS days
+				},
+			},
 			select: {
 				id: true,
 				embedding: true,
@@ -92,6 +102,12 @@ export class GroupingService {
 			if (!bestMatch || bestScore < GROUP_THRESHOLD) {
 				console.log(
 					`No good match found for article ${this.articleId}. Creating new group.`,
+				);
+				// Log the best score and the best match ID (if any) for debugging purposes
+				console.log(
+					`Best match score: ${bestScore} (best match: ${
+						bestMatch ? bestMatch.id : "None"
+					})`,
 				);
 				// Create a new group for this article
 				const newGroup = await tx.articleGroup.create({

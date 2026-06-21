@@ -9,16 +9,6 @@ const parser = new Parser();
 async function main() {
 	await registerSources();
 	await fetchSources();
-
-	/* 	(async () => {
-		let feed = await parser.parseURL("https://docker.com/feed/");
-		feed.items.forEach((item) => {
-			console.log(`${Object.keys(item)}`);
-
-			return;
-		});
-	})();
-	*/
 }
 
 main()

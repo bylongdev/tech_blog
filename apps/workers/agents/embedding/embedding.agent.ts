@@ -1,5 +1,6 @@
 import { prisma } from "@techblog/database/src/client.js";
 import { EmbeddingService } from "../../services/embedding.service.js";
+import { QueueProducer } from "../../queues/producer.queue.js";
 
 /* 
 	EmbeddingAgent take responsibility for:
@@ -37,6 +38,14 @@ export class EmbeddingAgent {
 				status: "EMBEDDED",
 			},
 		});
+
+		// Step 4: Add job to find best match in grouping service
+		const queueProducer = new QueueProducer("embedding");
+		await queueProducer.add("find_best_match", {
+			candidateId: candidate.id,
+			vector,
+		});
+		await queueProducer.close();
 
 		return {
 			candidateId: candidate.id,
