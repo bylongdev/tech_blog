@@ -9,6 +9,19 @@ const parser = new Parser();
 async function main() {
 	await registerSources();
 	await fetchSources();
+
+	await parser
+		.parseURL("https://blog.cloudflare.com/rss")
+		.then((feed) => {
+			feed.items.forEach(async (item) => {
+				const articleId = item.guid || item.link;
+				console.log("Processing article:", Object.keys(item), item.content);
+				if (!articleId) return;
+			});
+		})
+		.catch((error) => {
+			console.error("Error parsing RSS feed:", error);
+		});
 }
 
 main()
