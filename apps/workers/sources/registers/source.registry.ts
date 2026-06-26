@@ -6,6 +6,8 @@ import { techcrunchSource } from "../techcrunch.source.js";
 import { anthropicSource } from "../anthropic.source.js";
 import { dockerSource } from "../docker.source.js";
 import { cloudflareSource } from "../cloudflare.source.js";
+import { azureSource } from "../azure.source.js";
+import { metaSource } from "../meta.source.js";
 
 export type SourceConfig = {
 	slug: string;
@@ -23,4 +25,6 @@ export const SOURCES: SourceConfig[] = [
 	anthropicSource,
 	dockerSource,
 	cloudflareSource,
+	azureSource,
+	metaSource,
 ];
