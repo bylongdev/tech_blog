@@ -8,6 +8,7 @@ import { dockerSource } from "../docker.source.js";
 import { cloudflareSource } from "../cloudflare.source.js";
 import { azureSource } from "../azure.source.js";
 import { metaSource } from "../meta.source.js";
+import { vercelSource } from "../vercel.source.js";
 
 export type SourceConfig = {
 	slug: string;
@@ -27,4 +28,5 @@ export const SOURCES: SourceConfig[] = [
 	cloudflareSource,
 	azureSource,
 	metaSource,
+	vercelSource,
 ];
