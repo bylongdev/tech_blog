@@ -1,7 +1,6 @@
 import { registerSources } from "./jobs/register-sources.job.js";
 import { fetchSources } from "./jobs/fetch-sources.job.js";
 import { prisma } from "@techblog/database/src/client.js";
-import { GroupingService } from "./services/article-grouping.service.js";
 
 import Parser from "rss-parser";
 const parser = new Parser();
