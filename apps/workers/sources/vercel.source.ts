@@ -5,5 +5,5 @@ export const vercelSource: SourceConfig = {
 	name: "Vercel Blog",
 	url: "https://vercel.com/blog/rss.xml",
 	fetchType: "RSS",
-	enabled: true,
+	enabled: false,
 };

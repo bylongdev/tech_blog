@@ -14,7 +14,7 @@ class QueueProducer {
 		});
 	}
 
-	async add(jobName: string, data: unknown) {
+	async add(jobName: string, data: any) {
 		return this.queue.add(jobName, data);
 	}
 

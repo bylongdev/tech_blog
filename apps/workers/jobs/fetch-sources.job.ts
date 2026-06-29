@@ -39,9 +39,8 @@ async function fetchSources() {
 			// Fetch articles from the source
 			const articles = await fetcher.fetch();
 
-			const rawArticleService = new RawArticleService();
-
 			// Save the fetched articles to the database
+			const rawArticleService = new RawArticleService();
 			const result = await rawArticleService.saveMany(articles);
 
 			// Update the fetch log with the results of the fetch operation
