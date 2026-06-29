@@ -53,6 +53,8 @@ This project is currently configured for local and self-hosted execution:
    - `pnpm wk:dev`
 8. Start queue listener (separate terminal):
    - `pnpm wk:queue:listen`
+9. Start the frontend app (separate terminal):
+   - `pnpm fe:dev`
 
 ## 🧠 Lessons Learned
 
