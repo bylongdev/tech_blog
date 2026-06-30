@@ -2,7 +2,7 @@ import { Worker } from "bullmq";
 import { redisConfig } from "../connection.js";
 
 import { embeddingJob } from "../../jobs/embedding.job.js";
-import { groupingJob } from "../../jobs/grouping.job.js";
+import { groupingJob } from "../../jobs/group-article.job.js";
 import { registerCandidateJob } from "../../jobs/register-candidate.job.js";
 
 new Worker(

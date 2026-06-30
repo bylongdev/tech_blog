@@ -112,6 +112,74 @@ class OpenAIClient {
 			throw error;
 		}
 	}
+
+	async articleCategorising(input: string): Promise<string> {
+		try {
+			if (!input || input.trim() === "") {
+				throw new Error("Input for article categorising cannot be empty.");
+			}
+
+			const model = process.env.OPENAI_ARTICLE_CATEGORISING_MODEL || "gpt-4o";
+
+			const response = await this.client.responses.parse({
+				model,
+				input: [
+					{
+						role: "system",
+						content: `
+							You are an expert in classifying articles into categories, types, and subcategories.
+
+							Rules:
+							- category must be one of the following: [AI, Programming, Web Development, Cloud, DevOps, Security, Data & AI Engineering, Developer Tools, Infrastructure, Startups & Business]
+							- type must be one of the following: [Tutorial, News, Opinion, Review, Case Study, Interview, Guide, Announcement]
+							- subCategory should be short, max 3 words.
+							- Use the overall topic of the article, not just the vendor.
+							- If no category is a good fit, choose the closest matching category.
+							- Return structured JSON only.
+							
+							Constraints:
+							- Output must be valid JSON.
+							- Do not include any additional text or explanation.
+							- Do not include any HTML or Markdown formatting.
+							- Do not include any special characters outside of the JSON structure.
+							- Ensure that the output is parsable by a JSON parser.
+
+							Output format:
+							{
+								"category": "string",
+								"type": "string",
+								"subCategory": "string"
+							}
+
+							Input: ${input}
+
+							`.trim(),
+					},
+					{
+						role: "user",
+						content: input,
+					},
+				],
+			});
+
+			if (
+				!response ||
+				!response.output_text ||
+				response.output_text.trim() === ""
+			) {
+				throw new Error(
+					"No data returned from OpenAI API for article categorising.",
+				);
+			}
+
+			const result = response.output_text.trim();
+
+			return result;
+		} catch (error) {
+			console.error("Error in articleCategorising:", error);
+			throw error;
+		}
+	}
 }
 
 export const openAIClient = new OpenAIClient();
