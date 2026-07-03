@@ -1,4 +1,4 @@
-import { CategorisingService } from "../../services/group-categorising.service.js";
+import { CategorisingService } from "../../services/classification/group-categorising.service.js";
 import { openAIClient } from "../lib/openai/openai.client.js";
 
 export class CategorisingAgent {

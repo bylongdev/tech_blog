@@ -2,8 +2,8 @@ import { prisma } from "@techblog/database/src/client.js";
 import { Fetcher } from "../fetchers/fetcher.js";
 
 // Services
-import { RawArticleService } from "../services/raw-article.service.js";
-import { FetchLogService } from "../services/fetch-log.service.js";
+import { RawArticleService } from "../services/crud/save-articles.service.js";
+import { FetchLogService } from "../services/logs/fetch-log.service.js";
 
 async function fetchSources() {
 	const sources = await prisma.source.findMany({
@@ -41,7 +41,7 @@ async function fetchSources() {
 
 			// Save the fetched articles to the database
 			const rawArticleService = new RawArticleService();
-			const result = await rawArticleService.saveMany(articles);
+			const result = await rawArticleService.bulkSave(articles);
 
 			// Update the fetch log with the results of the fetch operation
 			await fetchLog.success(fetchLogId, {

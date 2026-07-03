@@ -4,7 +4,7 @@ export class EmbeddingService {
 	private agent = new OpenAIClient("text-embedding-3-small");
 
 	// Create embedding vector from text using OpenAI API
-	async createEmbedding(input: string | string[]): Promise<number[]> {
+	async getEmbeddingVector(input: string | string[]): Promise<number[]> {
 		if (!input || (Array.isArray(input) && input.length === 0)) {
 			throw new Error("Input for embedding cannot be empty.");
 		}

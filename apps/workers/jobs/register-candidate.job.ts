@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import { ContentService } from "../services/clean-text.service.js";
+import { ContentService } from "../utils/helpers/clean-text.helper.js";
 import { QueueProducer } from "../queues/producer.queue.js";
 
 // Separate function to handle the register_candidate job
