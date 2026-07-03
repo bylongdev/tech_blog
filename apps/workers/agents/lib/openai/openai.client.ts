@@ -31,7 +31,7 @@ class OpenAIClient extends OpenAI {
 		This method sends a prompt and input to the OpenAI API and returns the generated response.
 		It validates the prompt and input to ensure they are not empty, and handles errors that may occur during the API call.
 	*/
-	async prompt(prompt: string, input: string): Promise<string> {
+	async prompt(prompt: string, input: string, schema: object): Promise<JSON> {
 		try {
 			/* 
 			Validate the prompt and input to ensure they are not empty or just whitespace.
@@ -48,7 +48,7 @@ class OpenAIClient extends OpenAI {
 			/* 
 			Send the prompt and input to the OpenAI API and return the generated response.
 			*/
-			const response = await this.client.responses.parse({
+			const response = await this.client.responses.create({
 				model: this.model,
 				input: [
 					{
@@ -60,6 +60,16 @@ class OpenAIClient extends OpenAI {
 						content: input,
 					},
 				],
+				text: {
+					format: {
+						type: "json_schema",
+						name: "article_metadata",
+						strict: true,
+						schema: {
+							...schema,
+						},
+					},
+				},
 			});
 
 			// Validate response from the API
@@ -71,9 +81,9 @@ class OpenAIClient extends OpenAI {
 				throw new Error("No data returned from OpenAI API for prompt.");
 			}
 
-			const result = response.output_text.trim();
+			const metadata: JSON = JSON.parse(response.output_text.trim());
 
-			return result;
+			return metadata;
 		} catch (error) {
 			console.error("Error in prompt:", error);
 			throw error;

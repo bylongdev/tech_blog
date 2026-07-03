@@ -1,11 +1,12 @@
 import { OpenAIClient } from "../lib/openai/openai.client.js";
+import type { MetadataArticleDTO } from "@techblog/shared";
 
 class MetaDataExtractingAgent extends OpenAIClient {
 	constructor() {
 		super("gpt-4o-mini");
 	}
 
-	async extractMetaData(articleText: string): Promise<string> {
+	async extractMetaData(articleText: string): Promise<MetadataArticleDTO> {
 		const prompt = `
     <Role>
     You are an information extraction agent.
@@ -154,17 +155,46 @@ class MetaDataExtractingAgent extends OpenAIClient {
     </Output>
     `;
 
+		const schema = {
+			type: "object",
+			additionalProperties: false,
+			properties: {
+				category: { type: "string" },
+				subcategory: { type: "string" },
+				class: { type: "string" },
+				entities: {
+					type: "array",
+					items: { type: "string" },
+				},
+				products: {
+					type: "array",
+					items: { type: "string" },
+				},
+				event: { type: "string" },
+				summary: { type: "string" },
+			},
+			required: [
+				"category",
+				"subcategory",
+				"class",
+				"entities",
+				"products",
+				"event",
+				"summary",
+			],
+		};
+
 		if (!articleText || articleText.trim() === "") {
 			throw new Error("Article text cannot be empty.");
 		}
 
-		const response = await this.prompt(prompt, articleText);
+		const response = await this.prompt(prompt, articleText, schema);
 
-		if (!response || response.trim() === "") {
+		if (!response) {
 			throw new Error("Empty response from OpenAI API");
 		}
 
-		return response;
+		return response as MetadataArticleDTO;
 	}
 }
 

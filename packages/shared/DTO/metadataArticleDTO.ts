@@ -4,7 +4,6 @@ export interface MetadataArticleDTO {
 	class?: string;
 	entities?: string[];
 	products?: string[];
-
 	event?: string;
 	summary?: string;
 }
