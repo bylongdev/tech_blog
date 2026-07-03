@@ -1,5 +1,4 @@
 import { EmbeddingAgent } from "../agents/embedding/embedding.agent.js";
-import { GroupingService } from "../services/article-grouping.service.js";
 
 export async function embeddingJob(candidateId: string) {
 	// This is a placeholder for the actual embedding job logic

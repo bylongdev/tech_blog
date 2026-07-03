@@ -1,4 +1,4 @@
-import { GroupingService } from "../services/article-grouping.service.js";
+import { GroupingService } from "../services/grouping/article-grouping.service.js";
 
 async function groupingJob(candidateId: string, vector: number[]) {
 	console.log(
