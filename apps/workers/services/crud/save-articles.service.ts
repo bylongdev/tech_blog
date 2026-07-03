@@ -1,5 +1,8 @@
 import { prisma } from "@techblog/database/src/client.js";
-import type { CreateRawArticleDto } from "@techblog/shared";
+import type {
+	CandidateArticleDTO,
+	CreateRawArticleDto,
+} from "@techblog/shared";
 import { ContentService } from "../../utils/helpers/clean-text.helper.js";
 import { QueueProducer } from "../../queues/producer.queue.js";
 
@@ -9,46 +12,22 @@ export class RawArticleService {
 		const result = await Promise.all(
 			articles.map(async (article) => {
 				try {
-					const data = this.mapToPrismaData(article); // Map the DTO to the format expected by Prisma
+					const rawArticle = await this.saveRawArticle(article);
 
-					const existing = await prisma.rawArticle.findUnique({
-						where: {
-							link: data.link, // 'link' is unique for each article
-						},
-					});
-
-					if (existing) {
-						// Article already exists, skip saving
-						console.log(
-							`Article with link ${data.link} already exists, skipping.`,
-						);
+					if (!rawArticle) {
 						return false; // Indicate success for this article (already exists)
 					}
 
-					console.log(`Saving new article! Link: ${data.link}`);
+					const candidate = await this.saveCandidateArticle(
+						this.mapToCandidateData(rawArticle),
+					);
 
-					// Create a new article since it doesn't exist
-					const newArticle = await prisma.rawArticle.create({
-						data,
-					});
-
-					if (!newArticle) {
-						console.error(`Failed to create article for link: ${data.link}`);
-						return false; // Indicate failure for this article
-					}
-
-					console.log(`Successfully created article! Link: ${data.link}`);
-
-					// After successfully saving the article, add it to the register_candidate queue
-					const queueProducer = new QueueProducer("embedding");
-					await queueProducer.add("register_candidate", {
-						rawArticleId: newArticle.id,
-						title: newArticle.title,
-						content: newArticle.content?.slice(0, 800) || "",
+					const queueProducer = new QueueProducer("extracting");
+					await queueProducer.add("meta_extracting", {
+						rawArticleId: candidate.id,
+						content: rawArticle.content || "",
 					});
 					await queueProducer.close(); // Close the producer after adding the job
-
-					console.log(`Added article to embedding queue! Link: ${data.link}`);
 
 					return true; // Indicate success for this article
 				} catch (error) {
@@ -65,6 +44,60 @@ export class RawArticleService {
 		};
 	}
 
+	async saveRawArticle(article: CreateRawArticleDto) {
+		const data = this.mapToPrismaData(article);
+
+		const existing = await prisma.rawArticle.findUnique({
+			where: {
+				link: data.link,
+			},
+		});
+
+		if (existing) {
+			console.log(`Article with link ${data.link} already exists, skipping.`);
+			return null;
+		}
+
+		const newArticle = await prisma.rawArticle.create({
+			data,
+		});
+
+		if (!newArticle) {
+			throw new Error(`Failed to create article for link: ${data.link}`);
+		}
+
+		return newArticle;
+	}
+
+	async saveCandidateArticle(article: CandidateArticleDTO) {
+		if (!article.rawArticleId) {
+			throw new Error(
+				"rawArticleId is required to create an article candidate.",
+			);
+		}
+
+		if (!article.cleanedTitle) {
+			throw new Error(
+				"cleanedTitle is required to create an article candidate.",
+			);
+		}
+
+		if (!article.embeddingText) {
+			throw new Error(
+				"embeddingText is required to create an article candidate.",
+			);
+		}
+
+		return prisma.articleCandidate.create({
+			data: {
+				rawArticleId: article.rawArticleId,
+				cleanedTitle: article.cleanedTitle,
+				embeddingText: article.embeddingText,
+				status: "QUEUED",
+			},
+		});
+	}
+
 	// Helper method to map CreateRawArticleDto to the format expected by Prisma
 	private mapToPrismaData(article: CreateRawArticleDto) {
 		return {
@@ -79,6 +112,25 @@ export class RawArticleService {
 			imageUrl: article.imageUrl ?? [],
 			publishedAt: article.publishedAt ?? null,
 			fetchedAt: article.fetchedAt,
+		};
+	}
+
+	private mapToCandidateData(article: {
+		id: string;
+		title: string;
+		content: string | null;
+	}): CandidateArticleDTO {
+		const contentService = new ContentService();
+		const cleanedTitle = contentService.clean(article.title);
+		const cleanedContent = contentService.clean(article.content || "");
+		const embeddingText = [cleanedTitle, cleanedContent.slice(0, 800)]
+			.filter(Boolean)
+			.join("\n");
+
+		return {
+			rawArticleId: article.id,
+			cleanedTitle,
+			embeddingText,
 		};
 	}
 }

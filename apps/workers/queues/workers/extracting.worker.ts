@@ -3,11 +3,14 @@ import { redisConfig } from "../connection.js";
 import { metaDataExtractingJob } from "../../jobs/meta-data-extracting.job.js";
 
 new Worker(
-	"extracting ",
+	"extracting",
 	async (job) => {
 		switch (job.name) {
 			case "meta_extracting":
-				metaDataExtractingJob.extractMetaData(job.data.content);
+				await metaDataExtractingJob.extract(
+					job.data.rawArticleId,
+					job.data.content,
+				);
 				break;
 			default:
 				console.warn(`Unknown job name: ${job.name}`);

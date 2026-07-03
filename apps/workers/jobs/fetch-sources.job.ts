@@ -2,7 +2,7 @@ import { prisma } from "@techblog/database/src/client.js";
 import { Fetcher } from "../fetchers/fetcher.js";
 
 // Services
-import { RawArticleService } from "../services/crud/save-articles.service.js";
+import { RawArticleService } from "../services/CRUD/save-articles.service.js";
 import { FetchLogService } from "../services/logs/fetch-log.service.js";
 
 async function fetchSources() {
