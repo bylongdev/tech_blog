@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import { EmbeddingService } from "../../services/embedding.service.js";
+import { EmbeddingService } from "../../services/embedding/embedding.service.js";
 import { QueueProducer } from "../../queues/producer.queue.js";
 
 /* 
@@ -26,7 +26,7 @@ export class EmbeddingAgent {
 		}
 
 		// Step 2: Create embedding vector
-		const vector = await this.embeddingService.createEmbedding(
+		const vector = await this.embeddingService.getEmbeddingVector(
 			candidate.embeddingText,
 		);
 

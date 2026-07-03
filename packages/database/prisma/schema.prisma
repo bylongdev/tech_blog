@@ -61,6 +61,14 @@ model ArticleCandidate {
   rawArticleId String     @unique
   rawArticle   RawArticle @relation(fields: [rawArticleId], references: [id])
 
+  category    String?
+  subCategory String?
+  class       String?
+  entities    String[]
+  products    String[]
+  event       String?
+  summary     String?
+
   cleanedTitle  String
   embeddingText String
   embedding     Json?

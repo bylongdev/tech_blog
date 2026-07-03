@@ -1,4 +1,3 @@
-import { Prisma } from "@techblog/database/generated/prisma/client.js";
 import { prisma } from "@techblog/database/src/client.js";
 import { cosineSimilarity } from "../../utils/cosine-similarity.js";
 
