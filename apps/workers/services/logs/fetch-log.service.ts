@@ -1,5 +1,5 @@
 import { prisma } from "@techblog/database/src/client.js";
-import type { FetchLogDto } from "../../../../packages/shared/DTO/fetchLogDTO.js";
+import type { FetchLogDto } from "@techblog/shared/";
 
 export class FetchLogService {
 	async start(sourceId: string) {

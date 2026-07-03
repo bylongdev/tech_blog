@@ -1,11 +1,11 @@
 import { OpenAIClient } from "../lib/openai/openai.client.js";
 
-class MetaExtractingAgent extends OpenAIClient {
+class MetaDataExtractingAgent extends OpenAIClient {
 	constructor() {
 		super("gpt-4o-mini");
 	}
 
-	async extractMetaData(articleText: string) {
+	async extractMetaData(articleText: string): Promise<string> {
 		const prompt = `
     <Role>
     You are an information extraction agent.
@@ -100,9 +100,26 @@ class MetaExtractingAgent extends OpenAIClient {
     - Return only one primary event.
 
     7. summary
-    - Summarise the article in 2–3 sentences.
-    - Focus only on the main information.
-    - In the summary, make sure the actor/subject is correct. Do not attribute a product feature to an underlying technology unless the article explicitly says so.
+    - Write a structured summary of the article.
+    - Length: 60–150 words.
+    - Focus on the most important information only.
+    - Ensure the actor/subject is correct. Do not attribute a product feature to an underlying technology unless explicitly stated.
+
+    Structure:
+
+    1. What happened?
+    - Explain the primary announcement, release, incident or change.
+
+    2. Why does it matter?
+    - Explain the practical impact, benefit or significance.
+
+    3. (Optional) Key technical details
+    - Mention important implementation details, limitations, availability or supported platforms only if they are central to the article.
+
+    4. Closing
+    - Write a short catchy closing sentence.
+    - The closing sentence should be natural, memorable, and slightly editorial, but not clickbait.
+    - Keep the actor/subject correct.
 
     </Instructions>
 
@@ -151,4 +168,4 @@ class MetaExtractingAgent extends OpenAIClient {
 	}
 }
 
-export { MetaExtractingAgent };
+export { MetaDataExtractingAgent };
