@@ -187,9 +187,15 @@ class MetaDataExtractingAgent extends OpenAIClient {
 			throw new Error("Article text cannot be empty.");
 		}
 
+		console.log(`Extracting metadata for article text: ${articleText}`);
+
 		const response = await this.prompt(prompt, articleText, outputSchema);
 
-		if (!response || response.trim() === "") {
+		console.log(
+			`Received response from OpenAI API: ${JSON.stringify(response)}`,
+		);
+
+		if (!response || Object.keys(response).length === 0) {
 			throw new Error("Empty response from OpenAI API");
 		}
 

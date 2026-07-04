@@ -39,6 +39,10 @@ async function fetchSources() {
 			// Fetch articles from the source
 			const articles = await fetcher.fetch();
 
+			console.log(
+				`Fetched ${articles.length} articles from source ${source.name}`,
+			);
+
 			// Save the fetched articles to the database
 			const rawArticleService = new RawArticleService();
 			const result = await rawArticleService.bulkSave(articles);

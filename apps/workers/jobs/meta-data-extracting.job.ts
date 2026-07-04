@@ -9,7 +9,6 @@ class MetaDataExtractingJob extends MetaDataExtractingService {
 
 	async extract(candidateId: string, input: string) {
 		const result = await this.extractMetaData(input);
-
 		const data: MetadataArticleDTO = JSON.parse(result);
 
 		await this.updateCandidate(candidateId, data);

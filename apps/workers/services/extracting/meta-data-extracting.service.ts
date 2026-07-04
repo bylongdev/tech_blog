@@ -18,6 +18,10 @@ class MetaDataExtractingService extends MetaDataExtractingAgent {
 			throw new Error("No data provided for candidate update.");
 		}
 
+		console.log(
+			`Updating candidate ${candidateId} with data: ${JSON.stringify(data, null, 2)}`,
+		);
+
 		// Update the candidate in the database using Prisma
 		await prisma.articleCandidate.update({
 			where: { id: candidateId },
@@ -31,17 +35,24 @@ class MetaDataExtractingService extends MetaDataExtractingAgent {
 				summary: data.summary || null,
 			},
 		});
+
+		console.log(`Candidate ${candidateId} updated successfully.`);
 	}
 
 	async updateStatus(candidateId: string) {
 		if (!candidateId) {
 			throw new Error("Candidate ID is required to update status.");
 		}
+
+		console.log(`Updating status for candidate ${candidateId} to "EXTRACTED".`);
+
 		// Update the candidate status to "EXTRACTED" after successful metadata extraction
 		await prisma.articleCandidate.update({
 			where: { id: candidateId },
 			data: { status: "EXTRACTED" },
 		});
+
+		console.log(`Candidate ${candidateId} status updated to "EXTRACTED".`);
 	}
 }
 

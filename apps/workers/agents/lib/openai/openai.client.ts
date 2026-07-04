@@ -74,15 +74,11 @@ class OpenAIClient extends OpenAI {
 			});
 
 			// Validate response from the API
-			if (
-				!response ||
-				!response.output_text ||
-				response.output_text.trim() === ""
-			) {
+			if (!response || !response.output_parsed) {
 				throw new Error("No data returned from OpenAI API for prompt.");
 			}
 
-			const result = response.output_text.trim();
+			const result = JSON.stringify(response.output_parsed);
 
 			return result;
 		} catch (error) {

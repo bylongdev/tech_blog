@@ -18,8 +18,14 @@ export class RawArticleService {
 						return false; // Indicate success for this article (already exists)
 					}
 
+					console.log(`Saved raw article with ID: ${rawArticle.id}`);
+
 					const candidate = await this.saveCandidateArticle(
 						this.mapToCandidateData(rawArticle),
+					);
+
+					console.log(
+						`Saved candidate article with ID: ${candidate.id} for raw article ID: ${rawArticle.id}`,
 					);
 
 					const queueProducer = new QueueProducer("extracting");
@@ -28,6 +34,8 @@ export class RawArticleService {
 						content: rawArticle.content || "",
 					});
 					await queueProducer.close(); // Close the producer after adding the job
+
+					console.log(`Queued candidate for metadata extraction`);
 
 					return true; // Indicate success for this article
 				} catch (error) {
