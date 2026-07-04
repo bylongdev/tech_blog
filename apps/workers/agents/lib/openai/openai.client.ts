@@ -31,7 +31,11 @@ class OpenAIClient extends OpenAI {
 		This method sends a prompt and input to the OpenAI API and returns the generated response.
 		It validates the prompt and input to ensure they are not empty, and handles errors that may occur during the API call.
 	*/
-	async prompt(prompt: string, input: string): Promise<string> {
+	async prompt(
+		prompt: string,
+		input: string,
+		outputSchema: any,
+	): Promise<string> {
 		try {
 			/* 
 			Validate the prompt and input to ensure they are not empty or just whitespace.
@@ -60,6 +64,13 @@ class OpenAIClient extends OpenAI {
 						content: input,
 					},
 				],
+				text: {
+					format: {
+						name: "output_json",
+						type: "json_schema",
+						schema: outputSchema,
+					},
+				},
 			});
 
 			// Validate response from the API

@@ -154,11 +154,40 @@ class MetaDataExtractingAgent extends OpenAIClient {
     </Output>
     `;
 
+		const outputSchema = {
+			type: "object",
+			additionalProperties: false,
+			properties: {
+				category: { type: "string" },
+				subCategory: { type: "string" },
+				class: { type: "string" },
+				entities: {
+					type: "array",
+					items: { type: "string" },
+				},
+				products: {
+					type: "array",
+					items: { type: "string" },
+				},
+				event: { type: "string" },
+				summary: { type: "string" },
+			},
+			required: [
+				"category",
+				"subCategory",
+				"class",
+				"entities",
+				"products",
+				"event",
+				"summary",
+			],
+		};
+
 		if (!articleText || articleText.trim() === "") {
 			throw new Error("Article text cannot be empty.");
 		}
 
-		const response = await this.prompt(prompt, articleText);
+		const response = await this.prompt(prompt, articleText, outputSchema);
 
 		if (!response || response.trim() === "") {
 			throw new Error("Empty response from OpenAI API");
