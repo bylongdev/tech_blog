@@ -62,7 +62,7 @@ export class RawArticleService {
 		});
 
 		if (existing) {
-			console.log(`Article with link ${data.link} already exists, skipping.`);
+			// console.debug(`Article with link ${data.link} already exists, skipping.`);
 			return null;
 		}
 
@@ -77,7 +77,9 @@ export class RawArticleService {
 		return newArticle;
 	}
 
-	async saveCandidateArticle(article: CandidateArticleDTO) {
+	async saveCandidateArticle(
+		article: CandidateArticleDTO,
+	): Promise<Awaited<ReturnType<typeof prisma.articleCandidate.create>>> {
 		if (!article.rawArticleId) {
 			throw new Error(
 				"rawArticleId is required to create an article candidate.",

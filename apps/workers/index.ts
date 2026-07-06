@@ -5,7 +5,7 @@ import { prisma } from "@techblog/database/src/client.js";
 import { MetaDataExtractingAgent } from "./agents/extracting/meta-data-extracting.agent.js";
 const agent = new MetaDataExtractingAgent();
 
-const INTERVAL = 60 * 1000; // run every minute
+const INTERVAL = 5 * 60 * 1000; // run every 5 minutes
 
 async function main() {
 	await registerSources();
@@ -19,7 +19,7 @@ async function run() {
 		console.error("Error in worker:", error);
 	} finally {
 		console.log("-".repeat(30));
-		console.log("Worker cycle finished.\n");
+		console.log("Worker cycle finished.");
 		console.log("-".repeat(30));
 	}
 

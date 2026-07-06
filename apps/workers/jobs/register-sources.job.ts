@@ -15,9 +15,6 @@ async function registerSources() {
 				},
 				create: source,
 			});
-
-			// Log the registration of the source
-			console.log(`Registered source: ${source.name}`);
 		}),
 	);
 }
