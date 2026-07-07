@@ -187,8 +187,6 @@ class MetaDataExtractingAgent extends OpenAIClient {
 			throw new Error("Article text cannot be empty.");
 		}
 
-		console.log(`Extracting metadata for article text: ${articleText}`);
-
 		const response = await this.prompt(prompt, articleText, outputSchema);
 
 		console.log(

@@ -44,7 +44,7 @@ class MetaDataExtractingService extends MetaDataExtractingAgent {
 			throw new Error("Candidate ID is required to update status.");
 		}
 
-		console.log(`Updating status for candidate ${candidateId} to "EXTRACTED".`);
+		console.log(`Updating status for candidate ${candidateId}.`);
 
 		// Update the candidate status to "EXTRACTED" after successful metadata extraction
 		await prisma.articleCandidate.update({
@@ -52,7 +52,7 @@ class MetaDataExtractingService extends MetaDataExtractingAgent {
 			data: { status: "EXTRACTED" },
 		});
 
-		console.log(`Candidate ${candidateId} status updated to "EXTRACTED".`);
+		console.log(`Candidate status updated to "EXTRACTED".`);
 	}
 }
 

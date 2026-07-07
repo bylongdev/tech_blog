@@ -19,6 +19,7 @@ new Worker(
 	},
 	{
 		connection: redisConfig,
+		concurrency: 2, // Adjust concurrency as needed
 	},
 );
 

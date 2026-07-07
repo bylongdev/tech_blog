@@ -1,13 +1,11 @@
 import { registerSources } from "./jobs/register-sources.job.js";
 import { fetchSources } from "./jobs/fetch-sources.job.js";
-import { prisma } from "@techblog/database/src/client.js";
-
-import { MetaDataExtractingAgent } from "./agents/extracting/meta-data-extracting.agent.js";
-const agent = new MetaDataExtractingAgent();
+import { queueListener } from "./queues/queue-listener.js";
 
 const INTERVAL = 5 * 60 * 1000; // run every 5 minutes
 
 async function main() {
+	await queueListener.start();
 	await registerSources();
 	await fetchSources();
 }
