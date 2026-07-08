@@ -1,8 +1,8 @@
 import { Router, type Router as ExpressRouter } from "express";
 
-import { asyncHandler } from "../middleware/async-handler.js";
-import { requireAuth, requireRole } from "../middleware/auth.middleware.js";
-import { UserService } from "../services/user.service.js";
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { requireAuth, requireRole } from "../../middleware/auth.middleware.js";
+import { UserService } from "../../services/user.service.js";
 
 const userService = new UserService();
 

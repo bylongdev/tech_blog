@@ -8,12 +8,14 @@ dotenv.config({
 });
 
 const envSchema = z.object({
-	NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+	NODE_ENV: z
+		.enum(["development", "test", "production"])
+		.default("development"),
 	DATABASE_URL: z.string().min(1),
 	SESSION_SECRET: z
 		.string()
 		.min(32, "SESSION_SECRET must be at least 32 characters long."),
-	FRONTEND_ORIGIN: z.string().url().default("http://localhost:3000"),
+	FRONTEND_ORIGIN: z.url().default("http://localhost:3000"),
 	BACKEND_PORT: z.coerce.number().int().positive().default(4000),
 	SESSION_COOKIE_NAME: z.string().min(1).default("techblog.sid"),
 	SESSION_TTL_HOURS: z.coerce.number().int().positive().default(24),
