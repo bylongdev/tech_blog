@@ -3,9 +3,9 @@ import { fetchSources } from "./jobs/fetch-sources.job.js";
 import { queueListener } from "./queues/queue-listener.js";
 
 const INTERVAL = 5 * 60 * 1000; // run every 5 minutes
+await queueListener.start();
 
 async function main() {
-	await queueListener.start();
 	await registerSources();
 	await fetchSources();
 }

@@ -5,6 +5,7 @@ A TypeScript monorepo for ingesting technology news from multiple sources, proce
 ## ✨ Features
 
 - Multi-source ingestion with source registration and RSS fetching
+- Express backend API with session-based authentication and role-based access control
 - Structured persistence with PostgreSQL + Prisma
 - Queue-based background processing with BullMQ + Redis
 - AI-powered embedding generation using OpenAI
@@ -15,6 +16,7 @@ A TypeScript monorepo for ingesting technology news from multiple sources, proce
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
 - [pnpm Workspaces](https://pnpm.io/workspaces)
 - [Prisma](https://www.prisma.io/)
 - [PostgreSQL](https://www.postgresql.org/)
@@ -30,6 +32,7 @@ This project is currently configured for local and self-hosted execution:
 
 - **PostgreSQL**, **Redis**, and **Ollama** are provisioned via `docker-compose.yml`
 - Worker processes run from the monorepo and connect to those services
+- Backend API runs from the monorepo and uses PostgreSQL-backed sessions
 - Database schema and migrations are managed with Prisma
 
 ### Local Runbook
@@ -43,17 +46,23 @@ This project is currently configured for local and self-hosted execution:
    - `OPENAI_API_KEY`
    - `REDIS_HOST`
    - `REDIS_PORT`
+   - `SESSION_SECRET`
+   - `FRONTEND_ORIGIN`
+   - `BACKEND_PORT`
 4. Generate Prisma client:
    - `pnpm db:generate`
 5. Run migrations:
    - `pnpm db:migrate`
-6. Register sources:
+6. Start the backend API:
+   - `pnpm be:dev`
+   - The first registered account becomes `ADMIN` to bootstrap role-protected routes
+7. Register sources:
    - `pnpm wk:source:register`
-7. Run worker flow:
+8. Run worker flow:
    - `pnpm wk:dev`
-8. Start queue listener (separate terminal):
+9. Start queue listener (separate terminal):
    - `pnpm wk:queue:listen`
-9. Start the frontend app (separate terminal):
+10. Start the frontend app (separate terminal):
    - `pnpm fe:dev`
 
 ## 🧠 Lessons Learned

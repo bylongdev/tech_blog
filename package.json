@@ -7,6 +7,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"be:dev": "pnpm --filter @techblog/backend dev",
+		"be:typecheck": "pnpm --filter @techblog/backend typecheck",
 		"fe:dev": "pnpm --filter @techblog/frontend dev",
 		"wk:dev": "pnpm --filter @techblog/worker dev",
 		"wk:queue:listen": "pnpm --filter @techblog/worker queue:listen",
