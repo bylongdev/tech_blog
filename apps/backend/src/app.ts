@@ -44,7 +44,7 @@ export function createApp(): Express {
 	);
 
 	// Routes
-	app.use("/api/v1", apiRouter);
+	app.use("/api", apiRouter);
 
 	// Error handling middleware should be registered after the routes
 	app.use((_req, res) => {

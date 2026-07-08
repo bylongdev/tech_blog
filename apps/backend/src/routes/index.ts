@@ -1,5 +1,7 @@
 import { Router } from "express";
+import { v1Router } from "./v1/index.js";
+import { requireAuth, requireRole } from "../middleware/auth.middleware.js";
 
 export const apiRouter: Router = Router();
 
-apiRouter.get("v1");
+apiRouter.use("/v1", requireAuth, requireRole("ADMIN"), v1Router);

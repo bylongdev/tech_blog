@@ -1,11 +1,15 @@
 import { Router, type Router as ExpressRouter } from "express";
+import type { Request, Response } from "express";
 
-import { env } from "../../config/env.js";
-import { asyncHandler } from "../../middleware/async-handler.js";
-import { requireAuth } from "../../middleware/auth.middleware.js";
-import { AuthService } from "../../services/auth.service.js";
-import { loginSchema, registerSchema } from "../../auth/auth.schema.js";
-import { beginUserSession, endUserSession } from "../../auth/session-auth.js";
+import { env } from "../../../config/env.js";
+import { asyncHandler } from "../../../middleware/async-handler.js";
+import { requireAuth } from "../../../middleware/auth.middleware.js";
+import { AuthService } from "../../../services/auth.service.js";
+import { loginSchema, registerSchema } from "../../../auth/auth.schema.js";
+import {
+	beginUserSession,
+	endUserSession,
+} from "../../../auth/session-auth.js";
 
 const authService = new AuthService();
 
@@ -13,7 +17,7 @@ export const authRouter: ExpressRouter = Router();
 
 authRouter.post(
 	"/register",
-	asyncHandler(async (request, response) => {
+	asyncHandler(async (request: Request, response: Response) => {
 		const input = registerSchema.parse(request.body);
 		const user = await authService.register(input);
 
@@ -25,7 +29,7 @@ authRouter.post(
 
 authRouter.post(
 	"/login",
-	asyncHandler(async (request, response) => {
+	asyncHandler(async (request: Request, response: Response) => {
 		const input = loginSchema.parse(request.body);
 		const user = await authService.login(input);
 
@@ -37,7 +41,7 @@ authRouter.post(
 
 authRouter.post(
 	"/logout",
-	asyncHandler(async (request, response) => {
+	asyncHandler(async (request: Request, response: Response) => {
 		if (request.session.userId) {
 			await endUserSession(request);
 		}
@@ -50,7 +54,7 @@ authRouter.post(
 authRouter.get(
 	"/me",
 	requireAuth,
-	asyncHandler(async (request, response) => {
+	asyncHandler(async (request: Request, response: Response) => {
 		response.status(200).json({
 			user: request.currentUser,
 		});
