@@ -7,6 +7,8 @@ import { env } from "./config/env.js";
 import { errorHandler } from "./middleware/error-handler.middleware.js";
 
 import { apiRouter } from "./routes/index.js";
+import { authRouter } from "./routes/v1/auth/auth.route.js";
+import { adminRouter } from "./routes/v1/auth/admin.route.js";
 
 const sessionTtlMs = env.SESSION_TTL_HOURS * 60 * 60 * 1000;
 
@@ -45,6 +47,10 @@ export function createApp(): Express {
 
 	// Routes
 	app.use("/api", apiRouter);
+
+	// Auth and Admin routes should be registered after the session middleware and before the error handling middleware
+	app.use("/auth", authRouter);
+	app.use("/admin", adminRouter);
 
 	// Error handling middleware should be registered after the routes
 	app.use((_req, res) => {
