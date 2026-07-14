@@ -27,14 +27,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   container_name: techblog-ollama
-  #   ports:
-  #     - "11435:11434"
-  #   volumes:
-  #     - ollama_data:/root/.ollama
-
   worker:
     image: node:22-bookworm
     container_name: techblog-worker
@@ -62,6 +54,5 @@ services:
 
 volumes:
   postgres_data:
-  # ollama_data:
   worker_node_modules:
   pnpm_store:
