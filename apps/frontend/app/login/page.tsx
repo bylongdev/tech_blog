@@ -17,7 +17,10 @@ import * as z from "zod";
 
 const formSchema = z.object({
 	email: z.email("Please enter a valid email address"),
-	password: z.string(),
+	password: z
+		.string()
+		.min(8, "Password must be at least 8 characters long")
+		.max(72, "Password must be at most 72 characters long"),
 });
 
 export default function LoginPage() {
