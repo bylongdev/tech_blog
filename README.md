@@ -40,7 +40,9 @@ This project is currently configured for local and self-hosted execution:
 1. Install dependencies:
    - `pnpm install`
 2. Start infrastructure services:
-   - `docker compose up -d`
+   - `docker compose up -d postgres redis`
+   - To run the app containers too: `docker compose up -d backend worker`
+   - The Compose mounts keep workspace `node_modules` inside Docker volumes so container installs do not leave broken Windows junctions in `apps/*/node_modules` or `packages/*/node_modules`.
 3. Configure environment variables (for example):
    - `DATABASE_URL`
    - `OPENAI_API_KEY`
@@ -55,11 +57,13 @@ This project is currently configured for local and self-hosted execution:
    - `pnpm db:migrate`
 6. Start the backend API:
    - `pnpm be:dev`
+   - or `docker compose up -d backend`
    - The first registered account becomes `ADMIN` to bootstrap role-protected routes
 7. Register sources:
    - `pnpm wk:source:register`
 8. Run worker flow:
    - `pnpm wk:dev`
+   - or `docker compose up -d worker`
 9. Start queue listener (separate terminal):
    - `pnpm wk:queue:listen`
 10. Start the frontend app (separate terminal):

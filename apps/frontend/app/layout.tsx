@@ -1,8 +1,9 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -30,8 +31,8 @@ export default async function RootLayout({
 }>) {
 	const user = await requireAuth();
 
-	if (user) {
-		redirect("/dashboard");
+	if (!user) {
+		redirect("/login");
 	}
 
 	return (
