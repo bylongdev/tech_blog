@@ -1,65 +1,60 @@
-import Image from "next/image";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Lock, LockKeyhole } from "lucide-react";
 
 export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+	return (
+		<div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black min-h-dvh">
+			<main className="flex flex-1 w-full max-w-xl flex-col items-center justify-center py-32 px-16 bg-white dark:bg-black sm:items-start gap-8">
+				{/* Welcome Back things */}
+				<div className="flex flex-col items-center justify-center w-full gap-2">
+					<h1 className="tracking-[0.3em] font-semibold uppercase dark:text-zinc-400/70">
+						Techblog Dashboard
+					</h1>
+					<h3 className="text-3xl font-semibold">Welcome back</h3>
+					<div className="text-sm  dark:text-zinc-400/60">
+						Use your account credentials to continue.
+					</div>
+				</div>
+				{/* Login section */}
+				<div className="flex flex-col w-full p-6 gap-4 dark:bg-zinc-900/40 rounded-2xl border-2 dark:border-zinc-700/50 ">
+					{/* Login header */}
+					<div className="flex flex-col">
+						<div className="mb-2 bg-zinc-50 w-fit p-2 rounded-full">
+							<LockKeyhole className="text-black scale-90" />
+						</div>
+						<div className="text-3xl font-semibold">Log in</div>
+						<div className="text-zinc-400/80 font-medium text-sm">
+							Enter your username and password to access the dashboard.
+						</div>
+					</div>
+
+					{/* Email input */}
+					<div className="flex flex-col gap-4 my-2">
+						<div className="flex flex-col gap-1">
+							<FieldLabel className="">Email</FieldLabel>
+							<Input
+								placeholder="Enter your email"
+								type="email"
+							/>
+						</div>
+						{/* Password input */}
+						<div className="flex flex-col gap-1">
+							<FieldLabel className="">Password</FieldLabel>
+							<Input
+								placeholder="Enter your password"
+								type="password"
+							/>
+						</div>
+					</div>
+					<div className="flex flex-col gap-2 mt-8">
+						<Button className="btn btn-primary py-4">Log in</Button>
+					</div>
+				</div>
+			</main>
+		</div>
+	);
 }
