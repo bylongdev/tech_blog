@@ -7,6 +7,7 @@ import { FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { LockKeyhole } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 
@@ -20,6 +21,8 @@ const formSchema = z.object({
 });
 
 export default function Home() {
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -45,10 +48,11 @@ export default function Home() {
 
 			toast.success("Login successful!");
 
-			// Handle successful login (e.g., redirect, show a message, etc.)
+			router.replace("/dashboard");
+			router.refresh();
 		} catch (error) {
 			console.error("Error during login:", error);
-			toast.error("Login failed. Please try again.");
+			toast.error(error instanceof Error ? error.message : "Login failed");
 		}
 	};
 	return (

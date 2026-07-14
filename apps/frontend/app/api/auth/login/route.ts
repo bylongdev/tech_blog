@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import dotenv from "dotenv";
 
 export async function POST(request: Request) {
 	const body = await request.json();
