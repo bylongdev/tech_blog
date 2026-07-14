@@ -16,34 +16,53 @@ import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
 
 const formSchema = z.object({
+	name: z.string().trim().min(1).max(120),
 	email: z.email("Please enter a valid email address"),
 	password: z.string(),
 });
 
-export default function LoginPage() {
+export default function RegisterPage() {
 	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
+			name: "",
 			email: "",
 			password: "",
 		},
 	});
 
 	const onSubmit = async (data: z.infer<typeof formSchema>) => {
+		console.log("Submitting registration data:", data);
 		try {
-			const response = await fetch("/api/auth/login", {
+			const response = await fetch("/api/auth/register", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				credentials: "include",
 				body: JSON.stringify(data),
 			});
 
 			if (!response.ok) {
-				throw new Error("Login failed");
+				throw new Error(`Registration failed: ${response.statusText}`);
+			}
+
+			toast.success("Registration successful!");
+
+			const loginResponse = await fetch("/api/auth/login", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: data.email,
+					password: data.password,
+				}),
+			});
+
+			if (!loginResponse.ok) {
+				throw new Error("Login failed after registration");
 			}
 
 			toast.success("Login successful!");
@@ -51,8 +70,10 @@ export default function LoginPage() {
 			router.replace("/dashboard");
 			router.refresh();
 		} catch (error) {
-			console.error("Error during login:", error);
-			toast.error(error instanceof Error ? error.message : "Login failed");
+			console.error("Error during registration:", error);
+			toast.error(
+				error instanceof Error ? error.message : "Registration failed",
+			);
 		}
 	};
 	return (
@@ -63,40 +84,55 @@ export default function LoginPage() {
 					<h1 className="tracking-[0.3em] font-semibold uppercase dark:text-zinc-400/70">
 						Techblog Dashboard
 					</h1>
-					<CardTitle className="text-3xl font-semibold">Welcome back</CardTitle>
+					<CardTitle className="text-3xl font-semibold">
+						Hello there! 👋
+					</CardTitle>
 					<div className="text-sm  dark:text-zinc-400/60">
-						Use your account credentials to continue.
+						Create an account to get started with Techblog.
 					</div>
 				</div>
-				{/* Login section */}
+				{/* Register section */}
 				<Card className="flex flex-col w-full p-6 gap-4 dark:bg-zinc-900/40 rounded-2xl border-2 dark:border-zinc-700/50 ">
-					{/* Login header */}
+					{/* Register header */}
 					<CardHeader className="flex flex-col">
 						<div className="mb-2 bg-zinc-50 w-fit p-2 rounded-full">
 							<LockKeyhole className="text-black scale-90" />
 						</div>
-						<CardTitle className="text-3xl font-semibold">Log in</CardTitle>
+						<CardTitle className="text-3xl font-semibold">
+							Create an account
+						</CardTitle>
 						<div className="text-zinc-400/80 font-medium text-sm">
-							Enter your username and password to access the dashboard.
+							Enter your details to create an account.
 						</div>
 					</CardHeader>
 
 					{/* Email input */}
 					<CardContent className="">
 						<form
-							id="login-form"
+							id="register-form"
 							onSubmit={form.handleSubmit(onSubmit)}
 							className="flex flex-col gap-4"
 						>
-							{/* <div className="flex flex-col gap-1">
-								<FieldLabel className="">Email</FieldLabel>
-								<Input
-									id="email"
-									placeholder="Enter your email"
-									type="email"
-									{...form.register("email")}
-								/>
-							</div> */}
+							<Controller
+								name="name"
+								control={form.control}
+								render={({ field }) => (
+									<div className="flex flex-col gap-1">
+										<FieldLabel className="">Name</FieldLabel>
+										<Input
+											id="name"
+											placeholder="Enter your name"
+											type="text"
+											{...field}
+											aria-invalid={
+												form.formState.errors.name ? "true" : "false"
+											}
+											autoComplete="name"
+										/>
+									</div>
+								)}
+							/>
+
 							<Controller
 								name="email"
 								control={form.control}
@@ -112,6 +148,9 @@ export default function LoginPage() {
 												form.formState.errors.email ? "true" : "false"
 											}
 											autoComplete="email"
+											className={
+												form.formState.errors.email ? "border-red-500" : ""
+											}
 										/>
 									</div>
 								)}
@@ -144,6 +183,9 @@ export default function LoginPage() {
 												form.formState.errors.password ? "true" : "false"
 											}
 											autoComplete="current-password"
+											className={
+												form.formState.errors.password ? "border-red-500" : ""
+											}
 										/>
 									</div>
 								)}
@@ -153,7 +195,7 @@ export default function LoginPage() {
 							<Button
 								className="btn btn-primary py-4 font-bold text-lg hover:cursor-pointer"
 								type="submit"
-								form="login-form"
+								form="register-form"
 							>
 								Submit
 							</Button>
