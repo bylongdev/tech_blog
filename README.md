@@ -23,51 +23,41 @@ A TypeScript monorepo for ingesting technology news from multiple sources, proce
 - [Redis](https://redis.io/)
 - [BullMQ](https://bullmq.io/)
 - [OpenAI API](https://platform.openai.com/)
-- [Ollama](https://ollama.com/) (used by local concept-extraction components)
 - [Docker Compose](https://docs.docker.com/compose/)
 
 ## 🚀 Deployment
 
 This project is currently configured for local and self-hosted execution:
 
-- **PostgreSQL**, **Redis**, and **Ollama** are provisioned via `docker-compose.yml`
+- **PostgreSQL** and **Redis** are provisioned via `docker-compose.yml`
 - Worker processes run from the monorepo and connect to those services
 - Backend API runs from the monorepo and uses PostgreSQL-backed sessions
 - Database schema and migrations are managed with Prisma
 
 ### Local Runbook
 
-1. Install dependencies:
-   - `pnpm install`
-2. Start infrastructure services:
-   - `docker compose up -d postgres redis`
-   - To run the app containers too: `docker compose up -d backend worker`
-   - The Compose mounts keep workspace `node_modules` inside Docker volumes so container installs do not leave broken Windows junctions in `apps/*/node_modules` or `packages/*/node_modules`.
-3. Configure environment variables (for example):
-   - `DATABASE_URL`
-   - `OPENAI_API_KEY`
-   - `REDIS_HOST`
-   - `REDIS_PORT`
-   - `SESSION_SECRET`
-   - `FRONTEND_ORIGIN`
-   - `BACKEND_PORT`
-4. Generate Prisma client:
-   - `pnpm db:generate`
-5. Run migrations:
-   - `pnpm db:migrate`
-6. Start the backend API:
-   - `pnpm be:dev`
-   - or `docker compose up -d backend`
-   - The first registered account becomes `ADMIN` to bootstrap role-protected routes
-7. Register sources:
-   - `pnpm wk:source:register`
-8. Run worker flow:
-   - `pnpm wk:dev`
-   - or `docker compose up -d worker`
-9. Start queue listener (separate terminal):
-   - `pnpm wk:queue:listen`
-10. Start the frontend app (separate terminal):
-   - `pnpm fe:dev`
+1. Install Docker Desktop (or Docker Engine with the Compose plugin).
+2. Clone the repository and create the local environment file:
+   - `cp .env.example .env`
+   - Replace the example PostgreSQL, Redis, and session credentials in `.env`.
+3. Start the complete stack:
+   - `docker compose up --build`
+4. Open `http://localhost:3000`.
+
+Compose installs dependencies in the image, generates the Prisma client, waits for PostgreSQL and Redis, applies migrations, registers sources, and then starts the backend, worker, and frontend. No host installation of Node.js or pnpm is required. The first registered account becomes `ADMIN` to bootstrap role-protected routes.
+
+All credentials are read from the ignored root `.env` file; none are stored in `docker-compose.yml`. OpenAI-backed worker jobs require a real `OPENAI_API_KEY`, but that variable may remain empty when those jobs are not used. The port variables are optional overrides.
+
+Useful commands:
+
+- Start in the background: `docker compose up --build -d`
+- View service status: `docker compose ps`
+- Follow logs: `docker compose logs -f`
+- Stop services while preserving data: `docker compose down`
+- Stop services and delete local database/queue data: `docker compose down --volumes`
+- Run only infrastructure for host-based development: `docker compose up -d postgres redis`
+
+For host-based development, install dependencies with `pnpm install`, configure the variables shown in `.env.example`, generate the Prisma client with `pnpm db:generate`, and run migrations with `pnpm db:migrate`.
 
 ## 🧠 Lessons Learned
 

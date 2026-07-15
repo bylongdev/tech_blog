@@ -1,106 +1,133 @@
+x-app: &app
+  image: techblog-app:local
+  environment: &app-environment
+    DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
+    REDIS_HOST: redis
+    REDIS_PORT: "6379"
+    REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  init: true
+
 services:
   postgres:
-    image: postgres:17
-    container_name: techblog-postgres
+    image: postgres:17-alpine
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: techblog
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in .env}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d techblog"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 12
 
   redis:
     image: redis:7-alpine
-    container_name: techblog-redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    command:
+      - sh
+      - -c
+      - exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD"
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 12
 
-  worker:
-    image: node:22-bookworm
-    container_name: techblog-worker
-    restart: unless-stopped
-    working_dir: /workspace
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: postgres://admin:admin@postgres:5432/techblog
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    command:
-      - sh
-      - -c
-      - corepack enable && pnpm config set store-dir /pnpm/store && pnpm install --frozen-lockfile && pnpm --filter @techblog/worker dev
-    volumes:
-      - .:/workspace
-      - worker_root_node_modules:/workspace/node_modules
-      - worker_backend_node_modules:/workspace/apps/backend/node_modules
-      - worker_frontend_node_modules:/workspace/apps/frontend/node_modules
-      - worker_workers_node_modules:/workspace/apps/workers/node_modules
-      - worker_database_node_modules:/workspace/packages/database/node_modules
-      - worker_shared_node_modules:/workspace/packages/shared/node_modules
-      - pnpm_store:/pnpm/store
+  migrate:
+    <<: *app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: "no"
+    command: pnpm --filter @techblog/database prisma migrate deploy
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
+
+  source-register:
+    <<: *app
+    restart: "no"
+    command: pnpm --filter @techblog/worker source:register
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
   backend:
-    image: node:22-bookworm
-    container_name: techblog-backend
+    <<: *app
     restart: unless-stopped
-    working_dir: /workspace
-    ports:
-      - "${BACKEND_PORT:-4000}:${BACKEND_PORT:-4000}"
-    env_file:
-      - .env
     environment:
-      DATABASE_URL: postgres://admin:admin@postgres:5432/techblog
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-    command:
-      - sh
-      - -c
-      - corepack enable && pnpm config set store-dir /pnpm/store && pnpm install --frozen-lockfile && pnpm --filter @techblog/backend dev
-    volumes:
-      - .:/workspace
-      - backend_root_node_modules:/workspace/node_modules
-      - backend_backend_node_modules:/workspace/apps/backend/node_modules
-      - backend_frontend_node_modules:/workspace/apps/frontend/node_modules
-      - backend_workers_node_modules:/workspace/apps/workers/node_modules
-      - backend_database_node_modules:/workspace/packages/database/node_modules
-      - backend_shared_node_modules:/workspace/packages/shared/node_modules
-      - pnpm_store:/pnpm/store
+      <<: *app-environment
+      NODE_ENV: development
+      BACKEND_PORT: "4000"
+      FRONTEND_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
+    command: pnpm --filter @techblog/backend dev
+    ports:
+      - "${BACKEND_PORT:-4000}:4000"
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:4000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  worker:
+    <<: *app
+    restart: unless-stopped
+    command: pnpm --filter @techblog/worker dev
+    depends_on:
       redis:
         condition: service_healthy
+      source-register:
+        condition: service_completed_successfully
+
+  # frontend:
+  #   <<: *app
+  #   restart: unless-stopped
+  #   environment:
+  #     SERVER_API_URL: http://backend:4000
+  #     HOSTNAME: 0.0.0.0
+  #   command: pnpm --filter @techblog/frontend dev
+  #   ports:
+  #     - "${FRONTEND_PORT:-3000}:3000"
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD",
+  #         "node",
+  #         "-e",
+  #         "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+  #       ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 12
+  #     start_period: 20s
 
 volumes:
   postgres_data:
-  pnpm_store:
-  worker_root_node_modules:
-  worker_backend_node_modules:
-  worker_frontend_node_modules:
-  worker_workers_node_modules:
-  worker_database_node_modules:
-  worker_shared_node_modules:
-  backend_root_node_modules:
-  backend_backend_node_modules:
-  backend_frontend_node_modules:
-  backend_workers_node_modules:
-  backend_database_node_modules:
-  backend_shared_node_modules:
+  redis_data:
