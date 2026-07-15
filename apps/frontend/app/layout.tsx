@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 // import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth";
@@ -39,16 +40,17 @@ export default async function RootLayout({
 		<html
 			lang="en"
 			suppressHydrationWarning
+			className={`${geistSans.variable} ${geistMono.variable}`}
 		>
 			<head />
-			<body className={`${geistSans.variable} ${geistMono.variable}`}>
+			<body>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"
 					enableSystem
 					disableTransitionOnChange
 				>
-					{children}
+					<TooltipProvider>{children}</TooltipProvider>
 				</ThemeProvider>
 				<Toaster />
 			</body>
