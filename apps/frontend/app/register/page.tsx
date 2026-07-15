@@ -2,7 +2,13 @@
 
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { LockKeyhole } from "lucide-react";
@@ -99,9 +105,9 @@ export default function RegisterPage() {
 					</div>
 				</div>
 				{/* Register section */}
-				<Card className="flex flex-col w-full p-6 gap-4 dark:bg-zinc-900/40 rounded-2xl border-2 dark:border-zinc-700/50 ">
+				<Card className="flex flex-col w-full gap-4 dark:bg-zinc-900/40 rounded-2xl border-2 dark:border-zinc-700/50 ">
 					{/* Register header */}
-					<CardHeader className="flex flex-col">
+					<CardHeader className="flex flex-col px-6 pt-2">
 						<div className="mb-2 bg-zinc-50 w-fit p-2 rounded-full">
 							<LockKeyhole className="text-black scale-90" />
 						</div>
@@ -114,7 +120,7 @@ export default function RegisterPage() {
 					</CardHeader>
 
 					{/* Email input */}
-					<CardContent className="">
+					<CardContent className="px-6">
 						<form
 							id="register-form"
 							onSubmit={form.handleSubmit(onSubmit)}
@@ -208,6 +214,22 @@ export default function RegisterPage() {
 							</Button>
 						</div>
 					</CardContent>
+					<CardFooter className="mt-2">
+						<CardContent className="text-sm text-zinc-400/80 flex flex-col gap-4">
+							<div className="">
+								Already have an account? We&apos;ve probably got more bugs to
+								show you.{" "}
+								<span>
+									<Link
+										href="/login"
+										className="underline underline-offset-2 text-zinc-300/80 hover:text-zinc-300/90"
+									>
+										Log in
+									</Link>
+								</span>
+							</div>
+						</CardContent>
+					</CardFooter>
 				</Card>
 			</main>
 		</div>

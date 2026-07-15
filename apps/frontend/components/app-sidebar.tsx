@@ -23,6 +23,8 @@ import {
 	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -124,8 +126,6 @@ export function AppSidebar({ user }: AppSidebarProps) {
 				</SidebarMenu>
 			</SidebarHeader>
 
-			<SidebarSeparator />
-
 			<SidebarContent>
 				<SidebarGroup>
 					<SidebarGroupLabel>Workspace</SidebarGroupLabel>
@@ -165,7 +165,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium">
+									<span className="truncate font-medium capitalize">
 										{user.name?.trim() || "Account"}
 									</span>
 									<span className="truncate text-xs text-sidebar-foreground/70">
@@ -177,13 +177,13 @@ export function AppSidebar({ user }: AppSidebarProps) {
 							<DropdownMenuContent
 								align="end"
 								side="right"
-								sideOffset={8}
+								sideOffset={12}
 								className="min-w-56"
 							>
 								<DropdownMenuGroup>
 									<DropdownMenuLabel>
 										<div className="flex flex-col gap-0.5">
-											<span className="font-medium text-foreground">
+											<span className="font-medium text-foreground capitalize">
 												{user.name?.trim() || user.email}
 											</span>
 											<span className="font-normal uppercase tracking-wide">
@@ -195,16 +195,21 @@ export function AppSidebar({ user }: AppSidebarProps) {
 								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
 									<DropdownMenuLabel>Theme</DropdownMenuLabel>
-									{themes.map(({ value, label, icon: Icon }) => (
-										<DropdownMenuItem
-											key={value}
-											onClick={() => setTheme(value)}
-										>
-											<Icon />
-											<span>{label}</span>
-											{theme === value && <Check className="ml-auto" />}
-										</DropdownMenuItem>
-									))}
+									<DropdownMenuRadioGroup
+										value={theme}
+										onValueChange={setTheme}
+									>
+										{themes.map(({ value, label, icon: Icon }) => (
+											<DropdownMenuRadioItem
+												key={value}
+												value={value}
+												onClick={() => setTheme(value)}
+											>
+												<Icon />
+												<span>{label}</span>
+											</DropdownMenuRadioItem>
+										))}
+									</DropdownMenuRadioGroup>
 								</DropdownMenuGroup>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem
