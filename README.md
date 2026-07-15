@@ -40,6 +40,7 @@ This project is currently configured for local and self-hosted execution:
 2. Clone the repository and create the local environment file:
    - `cp .env.example .env`
    - Replace the example PostgreSQL, Redis, and session credentials in `.env`.
+   - Wrap any credential containing `$` in single quotes, for example `REDIS_PASSWORD='value$part'`.
 3. Start the complete stack:
    - `docker compose up --build`
 4. Open `http://localhost:3000`.

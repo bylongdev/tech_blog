@@ -15,6 +15,6 @@ COPY apps ./apps
 COPY packages ./packages
 
 RUN pnpm install --frozen-lockfile
-RUN DATABASE_URL=postgresql://admin:admin@postgres:5432/techblog pnpm db:generate
+RUN DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public pnpm db:generate
 
 CMD ["pnpm", "--filter", "@techblog/backend", "dev"]
