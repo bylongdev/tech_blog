@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	Check,
 	ChevronsUpDown,
 	LayoutDashboard,
 	LogOut,
@@ -11,7 +10,8 @@ import {
 	Sun,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -40,11 +40,9 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarRail,
-	SidebarSeparator,
 	useSidebar,
 } from "@/components/ui/sidebar";
 import type { AuthenticatedUser } from "@/lib/auth";
-
 interface AppSidebarProps {
 	user: AuthenticatedUser;
 }
@@ -70,11 +68,40 @@ function getInitials(user: AuthenticatedUser) {
 	return user.email.charAt(0).toUpperCase();
 }
 
+/* 
+<SidebarMenuItem>
+								<SidebarMenuButton
+									render={<Link href="/dashboard" />}
+									isActive
+									tooltip="Dashboard"
+									onClick={() => setOpenMobile(false)}
+								>
+									<LayoutDashboard />
+									<span>Dashboard</span>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+*/
+
 export function AppSidebar({ user }: AppSidebarProps) {
 	const router = useRouter();
+	const pathname = usePathname();
+
 	const { theme, setTheme } = useTheme();
 	const { setOpenMobile } = useSidebar();
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+	const sidebarMenuItems = [
+		{
+			label: "Dashboard",
+			href: "/dashboard",
+			icon: LayoutDashboard,
+		},
+		{
+			label: "Articles",
+			href: "/dashboard",
+			icon: Newspaper,
+		},
+	];
 
 	const handleLogout = async () => {
 		setIsLoggingOut(true);
@@ -131,17 +158,19 @@ export function AppSidebar({ user }: AppSidebarProps) {
 					<SidebarGroupLabel>Workspace</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton
-									render={<Link href="/dashboard" />}
-									isActive
-									tooltip="Dashboard"
-									onClick={() => setOpenMobile(false)}
-								>
-									<LayoutDashboard />
-									<span>Dashboard</span>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
+							{sidebarMenuItems.map(({ label, href, icon: Icon }) => (
+								<SidebarMenuItem key={label}>
+									<SidebarMenuButton
+										render={<Link href={href} />}
+										isActive={pathname === href}
+										tooltip={label}
+										onClick={() => setOpenMobile(false)}
+									>
+										<Icon />
+										<span>{label}</span>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							))}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarGroup>

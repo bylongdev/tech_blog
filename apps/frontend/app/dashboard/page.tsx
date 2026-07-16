@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
-import ArticlesTable from "./articles/page";
+import ArticlesTable from "./articles/article-table";
 
 export default function DashboardPage() {
 	return (
