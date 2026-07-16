@@ -16,7 +16,6 @@ export type Article = {
 	status: string;
 
 	createdAt: string;
-	updatedAt: string;
 };
 
 function HiddenCell({ value }: { value: string }) {
