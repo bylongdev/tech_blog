@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Copy, Check } from "lucide-react";
 
 export type Article = {
 	id: string;
@@ -20,16 +20,36 @@ export type Article = {
 
 function HiddenCell({ value }: { value: string }) {
 	const [hidden, setHidden] = useState(true);
+	const [copied, setCopied] = useState(false);
 
 	const hiddenValue = value.slice(0, 4) + "*".repeat(6) + value.slice(-4);
 
 	return (
-		<span
-			className="text-sm text-zinc-300/70 cursor-pointer"
-			onClick={() => setHidden((prev) => !prev)}
-		>
-			{hidden ? hiddenValue : value}
-		</span>
+		<div className="flex items-center">
+			<div
+				className="text-sm text-zinc-300/70 cursor-pointer "
+				onClick={() => setHidden((prev) => !prev)}
+			>
+				<span>{hidden ? hiddenValue : value}</span>
+			</div>
+			{hidden ? null : (
+				<Button
+					variant="ghost"
+					className="cursor-pointer"
+					onClick={() => {
+						navigator.clipboard.writeText(value);
+						setCopied(true);
+						setTimeout(() => setCopied(false), 2000);
+					}}
+				>
+					{copied ? (
+						<Check className="ml-2 h-4 w-4" />
+					) : (
+						<Copy className="ml-2 h-4 w-4" />
+					)}
+				</Button>
+			)}
+		</div>
 	);
 }
 
