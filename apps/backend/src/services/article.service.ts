@@ -4,7 +4,7 @@ export class ArticleService {
 	async listArticles() {
 		return await prisma.articleCandidate.findMany({
 			orderBy: {
-				createdAt: "asc",
+				createdAt: "desc",
 			},
 			select: {
 				id: true,
@@ -16,6 +16,7 @@ export class ArticleService {
 				event: true,
 				summary: true,
 				createdAt: true,
+				status: true,
 				rawArticle: {
 					select: {
 						id: true,
