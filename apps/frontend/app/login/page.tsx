@@ -97,15 +97,6 @@ export default function LoginPage() {
 							onSubmit={form.handleSubmit(onSubmit)}
 							className="flex flex-col gap-4"
 						>
-							{/* <div className="flex flex-col gap-1">
-								<FieldLabel className="">Email</FieldLabel>
-								<Input
-									id="email"
-									placeholder="Enter your email"
-									type="email"
-									{...form.register("email")}
-								/>
-							</div> */}
 							<Controller
 								name="email"
 								control={form.control}
@@ -169,7 +160,7 @@ export default function LoginPage() {
 						</div>
 					</CardContent>
 					<CardFooter className="mt-2">
-						<CardContent className="text-sm text-zinc-400/80 flex flex-col gap-4">
+						<CardContent className="text-sm text-zinc-400/80 flex flex-col">
 							<div className="">
 								Your backlog is big enough. Let us handle the news.
 							</div>
