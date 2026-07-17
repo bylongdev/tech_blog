@@ -68,20 +68,6 @@ function getInitials(user: AuthenticatedUser) {
 	return user.email.charAt(0).toUpperCase();
 }
 
-/* 
-<SidebarMenuItem>
-								<SidebarMenuButton
-									render={<Link href="/dashboard" />}
-									isActive
-									tooltip="Dashboard"
-									onClick={() => setOpenMobile(false)}
-								>
-									<LayoutDashboard />
-									<span>Dashboard</span>
-								</SidebarMenuButton>
-							</SidebarMenuItem>
-*/
-
 export function AppSidebar({ user }: AppSidebarProps) {
 	const router = useRouter();
 	const pathname = usePathname();
@@ -93,12 +79,12 @@ export function AppSidebar({ user }: AppSidebarProps) {
 	const sidebarMenuItems = [
 		{
 			label: "Dashboard",
-			href: "/dashboard",
+			href: "/dashboard/overview",
 			icon: LayoutDashboard,
 		},
 		{
 			label: "Articles",
-			href: "/dashboard",
+			href: "/dashboard/articles",
 			icon: Newspaper,
 		},
 	];
