@@ -28,4 +28,43 @@ export class ArticleService {
 			},
 		});
 	}
+
+	async getArticleById(id: string) {
+		return await prisma.articleCandidate.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				rawArticleId: true,
+				category: true,
+				subCategory: true,
+				class: true,
+				entities: true,
+				products: true,
+				event: true,
+				summary: true,
+				cleanedTitle: true,
+				groupId: true,
+				status: true,
+				createdAt: true,
+				updatedAt: true,
+				rawArticle: {
+					select: {
+						id: true,
+						title: true,
+						link: true,
+						summary: true,
+						content: true,
+						author: true,
+						publishedAt: true,
+						fetchedAt: true,
+						source: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+		});
+	}
 }
