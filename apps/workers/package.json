@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"scripts": {
 		"dev": "tsx ./index.ts",
-		"queue:listen": "tsx ./queue-listener.ts",
+		"queue:listen": "tsx ./queues/queue-listener.ts",
 		"source:register": "tsx ./jobs/register-sources.job.ts"
 	},
 	"dependencies": {

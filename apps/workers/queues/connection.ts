@@ -9,7 +9,8 @@ dotenv.config({
 // This file is responsible for setting up the connection to Redis for the worker queues.
 export const redisConfig = {
 	host: process.env.REDIS_HOST ?? "localhost",
-	port: Number(process.env.REDIS_PORT) ?? 6379,
+	port: Number(process.env.REDIS_PORT ?? 6379),
+	password: process.env.REDIS_PASSWORD,
 
 	maxRetriesPerRequest: null, // Disable retries to wait for Redis if it is down
 };
