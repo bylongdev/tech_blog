@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 FROM node:22-bookworm-slim
 
 ENV PNPM_HOME=/pnpm
@@ -14,7 +16,8 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
 COPY apps ./apps
 COPY packages ./packages
 
-RUN pnpm install --frozen-lockfile
-RUN DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public pnpm db:generate
+RUN --mount=type=cache,id=techblog-pnpm-store,target=/pnpm/store,sharing=locked \
+    pnpm install --frozen-lockfile --fetch-timeout=600000 --fetch-retries=5 --network-concurrency=8
+RUN DATABASE_URL=postgresql://placeholder:placeholder@localhost:5432/placeholder?schema=public pnpm db:generate
 
 CMD ["pnpm", "--filter", "@techblog/backend", "dev"]

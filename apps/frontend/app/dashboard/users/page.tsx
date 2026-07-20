@@ -1,15 +1,17 @@
-import { Card, CardContent } from "@/components/ui/card";
 import React from "react";
-import ArticlesTable from "./article-table/index";
+import { Card, CardContent } from "@/components/ui/card";
+import UsersTable from "./user-table/index";
 
-export default function ArticlesPage() {
+function UserPage() {
 	return (
 		<div className="flex h-full w-full items-start justify-center">
 			<Card className="dark:bg-zinc-600/20 flex flex-1">
 				<CardContent className="flex flex-col items-center flex-1 justify-center gap-4">
-					<ArticlesTable />
+					<UsersTable />
 				</CardContent>
 			</Card>
 		</div>
 	);
 }
+
+export default UserPage;

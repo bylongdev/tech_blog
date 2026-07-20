@@ -2,10 +2,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-// import { redirect } from "next/navigation";
-import { requireAuth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -30,12 +26,6 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const user = await requireAuth();
-
-	if (!user) {
-		redirect("/login");
-	}
-
 	return (
 		<html
 			lang="en"
@@ -50,7 +40,9 @@ export default async function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<TooltipProvider>{children}</TooltipProvider>
+					<TooltipProvider>
+						{children}
+					</TooltipProvider>
 				</ThemeProvider>
 				<Toaster />
 			</body>
