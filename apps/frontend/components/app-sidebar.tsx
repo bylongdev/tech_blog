@@ -8,6 +8,7 @@ import {
 	Moon,
 	Newspaper,
 	Sun,
+	User,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -76,6 +77,8 @@ export function AppSidebar({ user }: AppSidebarProps) {
 	const { setOpenMobile } = useSidebar();
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+	const auth = user.role === "ADMIN";
+
 	const sidebarMenuItems = [
 		{
 			label: "Dashboard",
@@ -87,6 +90,15 @@ export function AppSidebar({ user }: AppSidebarProps) {
 			href: "/dashboard/articles",
 			icon: Newspaper,
 		},
+		...(auth
+			? [
+					{
+						label: "Users",
+						href: "/dashboard/users",
+						icon: User,
+					},
+				]
+			: []),
 	];
 
 	const handleLogout = async () => {

@@ -13,20 +13,17 @@ interface AuthResponse {
 }
 
 export async function requireAuth() {
-	const cookieStore = await cookies();
+	const user = await getCurrentUser();
 
-	const response = await fetch(`${process.env.SERVER_API_URL}/auth/me`, {
-		headers: {
-			cookie: cookieStore.toString(),
-		},
-		cache: "no-store",
-	});
+	if (!user) {
+		return null;
+	}
 
-	/* 	if (!response.ok) {
-		redirect("/login");
-	} */
+	if (!user.user.role || user.user.role !== "ADMIN") {
+		return null;
+	}
 
-	return response.json();
+	return user as AuthResponse;
 }
 
 export async function getCurrentUser(): Promise<AuthResponse | null> {
