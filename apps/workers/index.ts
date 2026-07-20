@@ -6,6 +6,7 @@ const INTERVAL = 5 * 60 * 1000; // run every 5 minutes
 await queueListener.start();
 
 async function main() {
+	// await registerSources();
 	// await fetchSources();
 }
 

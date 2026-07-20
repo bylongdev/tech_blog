@@ -1,15 +1,9 @@
-x-app: &app
-  image: techblog-app:local
-  build:
-    context: .
-    dockerfile: Dockerfile
-  environment: &app-environment
-    DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
-    REDIS_HOST: redis
-    REDIS_PORT: "6379"
-    REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
-    OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-  init: true
+x-app-environment: &app-environment
+  DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in .env}
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
 
 services:
   postgres:
@@ -50,7 +44,11 @@ services:
       retries: 12
 
   backend:
-    <<: *app
+    image: techblog-backend:local
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    init: true
     restart: unless-stopped
     environment:
       <<: *app-environment
@@ -58,7 +56,6 @@ services:
       BACKEND_PORT: "4000"
       FRONTEND_ORIGIN: http://localhost:${FRONTEND_PORT:-3000}
       SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
-    command: pnpm --filter @techblog/backend dev
     ports:
       - "${BACKEND_PORT:-4000}:4000"
     depends_on:
@@ -78,8 +75,14 @@ services:
       start_period: 10s
 
   worker:
-    <<: *app
+    image: techblog-worker:local
+    build:
+      context: .
+      dockerfile: apps/workers/Dockerfile
+    init: true
     restart: unless-stopped
+    environment:
+      <<: *app-environment
     command:
       - sh
       - -c
@@ -101,30 +104,33 @@ services:
       retries: 12
       start_period: 10s
 
-  # frontend:
-  #   <<: *app
-  #   restart: unless-stopped
-  #   environment:
-  #     SERVER_API_URL: http://backend:4000
-  #     HOSTNAME: 0.0.0.0
-  #   command: pnpm --filter @techblog/frontend dev
-  #   ports:
-  #     - "${FRONTEND_PORT:-3000}:3000"
-  #   depends_on:
-  #     backend:
-  #       condition: service_healthy
-  #   healthcheck:
-  #     test:
-  #       [
-  #         "CMD",
-  #         "node",
-  #         "-e",
-  #         "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
-  #       ]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 12
-  #     start_period: 20s
+  frontend:
+    image: techblog-frontend:local
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    init: true
+    restart: unless-stopped
+    environment:
+      SERVER_API_URL: http://backend:4000
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
 
 volumes:
   postgres_data:
