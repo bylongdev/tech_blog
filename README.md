@@ -47,7 +47,7 @@ This project is currently configured for local and self-hosted execution:
 
 Compose builds dedicated backend, worker, and frontend images, installs dependencies, generates the Prisma client where needed, waits for PostgreSQL and Redis, applies migrations, registers sources, and then starts the application services. No host installation of Node.js or pnpm is required. The first registered account becomes `ADMIN` to bootstrap role-protected routes.
 
-All credentials are read from the ignored root `.env` file; none are stored in `docker-compose.yml`. OpenAI-backed worker jobs require a real `OPENAI_API_KEY`, but that variable may remain empty when those jobs are not used. The port variables are optional overrides.
+All credentials are read from the ignored root `.env` file; none are stored in `docker-compose.yml`. OpenAI-backed worker jobs require a real `OPENAI_API_KEY`, but that variable may remain empty when those jobs are not used. The port variables are optional overrides. Docker Compose derives each application's database URL from the PostgreSQL credentials and connects it to the internal `postgres` service; `DATABASE_URL` in `.env` is for host-based development.
 
 Useful commands:
 
