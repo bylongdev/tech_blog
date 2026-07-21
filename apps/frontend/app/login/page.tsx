@@ -154,6 +154,7 @@ export default function LoginPage() {
 								className="btn btn-primary py-4 font-bold text-lg hover:cursor-pointer"
 								type="submit"
 								form="login-form"
+								disabled={form.formState.isSubmitting}
 							>
 								Submit
 							</Button>

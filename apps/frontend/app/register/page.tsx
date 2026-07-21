@@ -209,6 +209,7 @@ export default function RegisterPage() {
 								className="btn btn-primary py-4 font-bold text-lg hover:cursor-pointer"
 								type="submit"
 								form="register-form"
+								disabled={form.formState.isSubmitting}
 							>
 								Submit
 							</Button>
