@@ -5,7 +5,16 @@ export async function POST(request: Request) {
 
 	const response = await fetch(`${process.env.SERVER_API_URL}/auth/logout`, {
 		method: "POST",
-		headers: cookie ? { cookie } : {},
+		headers: cookie
+			? {
+					cookie,
+					"CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID!,
+					"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
+				}
+			: {
+					"CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID!,
+					"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
+				},
 		cache: "no-store",
 	});
 
