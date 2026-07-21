@@ -1,18 +1,9 @@
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-	const apiUrl = process.env.SERVER_API_URL;
-
-	if (!apiUrl) {
-		return NextResponse.json(
-			{ message: "SERVER_API_URL is not configured" },
-			{ status: 500 },
-		);
-	}
-
 	const body = await request.json();
 
-	const response = await fetch(`${apiUrl}/auth/login`, {
+	const response = await fetch(`${process.env.SERVER_API_URL}/auth/login`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -20,6 +11,7 @@ export async function POST(request: Request) {
 			"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
 		},
 		body: JSON.stringify(body),
+		credentials: "include",
 		cache: "no-store",
 	});
 
