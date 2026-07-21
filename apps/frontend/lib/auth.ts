@@ -32,8 +32,6 @@ export async function getCurrentUser(): Promise<AuthResponse | null> {
 	const response = await fetch(`${process.env.SERVER_API_URL}/auth/me`, {
 		headers: {
 			cookie: cookieStore.toString(),
-			"CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID!,
-			"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
 		},
 		cache: "no-store",
 	});

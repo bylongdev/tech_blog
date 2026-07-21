@@ -21,8 +21,6 @@ class OllamaClient {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID!,
-					"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
 				},
 				body: JSON.stringify({
 					model: this.model,
@@ -78,8 +76,6 @@ class OllamaClient {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"CF-Access-Client-Id": process.env.CF_ACCESS_CLIENT_ID!,
-					"CF-Access-Client-Secret": process.env.CF_ACCESS_CLIENT_SECRET!,
 				},
 				body: JSON.stringify({
 					model: this.model,
