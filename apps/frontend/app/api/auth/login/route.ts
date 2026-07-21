@@ -16,16 +16,7 @@ export async function POST(request: Request) {
 		cache: "no-store",
 	});
 
-	const contentType = response.headers.get("content-type");
-	const text = await response.text();
-
-	console.log("Backend URL:", `${process.env.SERVER_API_URL}/auth/login`);
-	console.log("Backend status:", response.status);
-	console.log("Content-Type:", contentType);
-	console.log("Backend response:", text);
-
-	// const data = await response.json();
-	const data = text ? JSON.parse(text) : {};
+	const data = await response.json();
 
 	const nextResponse = NextResponse.json(data, {
 		status: response.status,
