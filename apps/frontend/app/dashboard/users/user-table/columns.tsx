@@ -69,13 +69,13 @@ function HiddenCell({ value }: { value: string }) {
 }
 
 export const columns: ColumnDef<User>[] = [
-	{
+	/* {
 		accessorKey: "id",
 		header: "ID",
 		cell: ({ row }) => {
 			return <HiddenCell value={row.getValue("id")} />;
 		},
-	},
+	}, */
 	{
 		accessorKey: "email",
 		header: "Email",
