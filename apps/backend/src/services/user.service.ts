@@ -16,4 +16,19 @@ export class UserService {
 			},
 		});
 	}
+
+	async getUserById(id: string) {
+		return prisma.user.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				role: true,
+				isActive: true,
+				createdAt: true,
+				updatedAt: true,
+			},
+		});
+	}
 }

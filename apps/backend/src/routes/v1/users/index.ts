@@ -14,3 +14,17 @@ usersRouter.get(
 		res.status(200).json({ users });
 	}),
 );
+
+usersRouter.get(
+	"/:id",
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+		const userId = req.params.id;
+		const userService = new UserService();
+		const user = await userService.getUserById(userId as string);
+		if (!user) {
+			res.status(404).json({ message: "User not found" });
+		} else {
+			res.status(200).json({ user });
+		}
+	}),
+);
