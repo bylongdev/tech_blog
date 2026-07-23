@@ -15,9 +15,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import type { ArticleDetail } from "./get-article";
-import { redirect, useRouter } from "next/navigation";
+// import { redirect, useRouter } from "next/navigation";
 
-function formatDate(value: string | null) {
+/* function formatDate(value: string | null) {
 	if (!value) {
 		return "-";
 	}
@@ -27,7 +27,7 @@ function formatDate(value: string | null) {
 		month: "short",
 		year: "numeric",
 	}).format(new Date(value));
-}
+} */
 
 function formatDateTime(value: string | null) {
 	if (!value) {
@@ -57,7 +57,7 @@ function DisplayField({
 			<dt className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
 				{label}
 			</dt>
-			<dd className="mt-1.5 break-words text-sm">{children}</dd>
+			<dd className="mt-1.5 wrap-break-words text-sm">{children}</dd>
 		</div>
 	);
 }

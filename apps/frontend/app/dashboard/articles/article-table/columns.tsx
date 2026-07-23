@@ -115,6 +115,10 @@ export const columns: ColumnDef<Article>[] = [
 				</Button>
 			);
 		},
+		cell: ({ row }) => {
+			const article = row.original;
+			return <span className="capitalize">{article.subCategory}</span>;
+		},
 	},
 	{
 		accessorKey: "class",
@@ -129,6 +133,10 @@ export const columns: ColumnDef<Article>[] = [
 				</Button>
 			);
 		},
+		cell: ({ row }) => {
+			const article = row.original;
+			return <span className="capitalize">{article.class}</span>;
+		},
 	},
 	{
 		accessorKey: "status",
@@ -141,6 +149,19 @@ export const columns: ColumnDef<Article>[] = [
 					Status
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const article = row.original;
+			const statusColor =
+				{
+					queued: "text-yellow-500",
+					processed: "text-blue-500",
+					extracted: "text-green-500",
+					failed: "text-red-500",
+				}[article.status.toLowerCase()] || "text-gray-500";
+			return (
+				<span className={`${statusColor} font-medium`}>{article.status}</span>
 			);
 		},
 	},

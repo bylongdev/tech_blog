@@ -9,10 +9,13 @@ export async function POST(request: Request) {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(body),
+		credentials: "include",
 		cache: "no-store",
 	});
 
 	const data = await response.json();
+
+	console.log("Response from server:", data);
 
 	const nextResponse = NextResponse.json(data, {
 		status: response.status,

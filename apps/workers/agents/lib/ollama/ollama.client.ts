@@ -19,7 +19,9 @@ class OllamaClient {
 
 			const response = await fetch(`${this.apiUrl}/api/generate`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify({
 					model: this.model,
 					prompt: PROMPT,
@@ -72,7 +74,9 @@ class OllamaClient {
 
 			const response = await fetch(`${this.apiUrl}/api/generate`, {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: {
+					"Content-Type": "application/json",
+				},
 				body: JSON.stringify({
 					model: this.model,
 					prompt: PROMPT,
@@ -116,7 +120,9 @@ class OllamaClient {
 
 		const response = await fetch(`${this.apiUrl}/api/generate`, {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: {
+				"Content-Type": "application/json",
+			},
 			body: JSON.stringify({
 				model: this.model,
 				prompt: PROMPT,
