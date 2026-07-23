@@ -26,6 +26,7 @@ export async function getData(): Promise<User[]> {
 		});
 
 		const data: UserCandidateResponse & { message?: string } = await res.json();
+		console.log("Response from server:", data);
 
 		if (!res.ok) {
 			throw new Error(data?.message ?? "Failed to fetch users");

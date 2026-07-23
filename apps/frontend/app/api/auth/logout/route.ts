@@ -5,11 +5,7 @@ export async function POST(request: Request) {
 
 	const response = await fetch(`${process.env.SERVER_API_URL}/auth/logout`, {
 		method: "POST",
-		headers: cookie
-			? {
-					cookie,
-				}
-			: {},
+		headers: cookie ? { cookie } : {},
 		cache: "no-store",
 	});
 
