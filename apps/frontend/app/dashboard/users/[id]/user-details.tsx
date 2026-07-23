@@ -111,7 +111,7 @@ export function UserProfile({ user }: { user: UserDetail }) {
 					<DisplayField label="Role">{user.role}</DisplayField>
 					<DisplayField
 						label="Email"
-						className="col-span-2 transition-all duration-300 ease-in-out"
+						className=" transition-all duration-300 ease-in-out"
 					>
 						{user.email}
 						{isCopy ? (
@@ -126,6 +126,10 @@ export function UserProfile({ user }: { user: UserDetail }) {
 								}}
 							/>
 						)}
+					</DisplayField>
+
+					<DisplayField label="Status">
+						{user.isActive ? "Active" : "Inactive"}
 					</DisplayField>
 					<Separator className={"col-span-2"} />
 

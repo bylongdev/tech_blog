@@ -6,6 +6,7 @@ export interface UserDetail {
 	name: string;
 	email: string;
 	role: string;
+	isActive: boolean | "true" | "false";
 	createdAt: string;
 	updatedAt: string;
 }
