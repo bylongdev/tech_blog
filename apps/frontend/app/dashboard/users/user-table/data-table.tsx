@@ -99,7 +99,7 @@ export function DataTable<TData, TValue>({
 									{row.getVisibleCells().map((cell) => (
 										<TableCell
 											key={cell.id}
-											className={`${cell.column.id === "isActive" ? "uppercase" : ""} ${cell.column.id === "name" ? "capitalize" : ""}`}
+											className={`${cell.column.id === "name" ? "capitalize" : ""}`}
 										>
 											{flexRender(
 												cell.column.columnDef.cell,

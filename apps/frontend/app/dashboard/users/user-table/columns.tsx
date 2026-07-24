@@ -120,10 +120,23 @@ export const columns: ColumnDef<User>[] = [
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Active
+					Status
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			);
+		},
+		cell: ({ row }) => {
+			const isActive = row.getValue("isActive");
+			return (
+				<span
+					className={`${
+						isActive ? "text-green-500" : "text-red-500"
+					} font-medium`}
+				>
+					{isActive ? "Active" : "Inactive"}
+				</span>
+			);
+			// return isActive ? "Active" : "Inactive";
 		},
 	},
 	{
