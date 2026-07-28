@@ -11,6 +11,8 @@ import { Bar, BarChart, CartesianGrid } from "recharts";
 import { type ChartConfig } from "@/components/ui/chart";
 import { getData } from "./get-data";
 import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
+import { TrendingDown, TrendingUp, Minus } from "lucide-react";
 
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -60,34 +62,94 @@ export default function OverviewPage() {
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
-      <h2 className="text-6xl font-medium">Hey there, Welcome back!</h2>
+      <h2 className="text-5xl font-medium">Hey there, Welcome back!</h2>
       <div className="mt-4 flex w-full flex-col gap-4">
-        <div className="grid grid-cols-4 gap-4">
-          <Card className="flex flex-col justify-between font-mono text-2xl font-semibold tracking-wide">
-            <CardHeader className="flex justify-center">Sources</CardHeader>
-            <CardContent className="flex justify-center text-6xl tracking-wider">
+        <div className="grid grid-cols-4 gap-4 tracking-wide">
+          <Card className="flex flex-col justify-between font-mono">
+            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+              <div className="">Sources</div>
+              <div
+                className={`${true ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
+              >
+                {true ? (
+                  true ? (
+                    <TrendingUp className="h-4 w-4" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4" />
+                  )
+                ) : (
+                  <Minus />
+                )}
+                <Label>10%</Label>
+              </div>
+            </CardHeader>
+            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
               {data.totals.sources}
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex justify-center">
-              Raw Articles
+            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+              <div className="">Raw Articles</div>
+              <div
+                className={`${true ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
+              >
+                {true ? (
+                  true ? (
+                    <TrendingUp className="h-4 w-4" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4" />
+                  )
+                ) : (
+                  <Minus />
+                )}
+                <Label>20%</Label>
+              </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-6xl tracking-wider">
+            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
               {data.totals.articles}
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex justify-center">
-              Published Articles
+            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+              <div className="">Published Articles</div>
+              <div
+                className={`${true ? (false ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
+              >
+                {true ? (
+                  false ? (
+                    <TrendingUp className="h-4 w-4" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4" />
+                  )
+                ) : (
+                  <Minus />
+                )}
+                <Label>-10%</Label>
+              </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-6xl tracking-wider">
+            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
               {data.totals.processedArticles}
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex justify-center">Members</CardHeader>
-            <CardContent className="flex justify-center text-6xl tracking-wider">
+            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+              <div className="">Members</div>
+              <div
+                className={`${false ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
+              >
+                {false ? (
+                  true ? (
+                    <TrendingUp className="h-4 w-4" />
+                  ) : (
+                    <TrendingDown className="h-4 w-4" />
+                  )
+                ) : (
+                  <Minus />
+                )}
+                <Label>10%</Label>
+              </div>
+            </CardHeader>
+            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
               {data.totals.members}
             </CardContent>
           </Card>
