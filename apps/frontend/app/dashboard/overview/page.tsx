@@ -6,33 +6,71 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid } from "recharts";
+import { Bar, BarChart, CartesianGrid, Line, XAxis, YAxis } from "recharts";
 
 import { type ChartConfig } from "@/components/ui/chart";
-import { getData } from "./get-data";
+import { getData, getArticles, ArticleCountByMonth } from "./get-data";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { TrendingDown, TrendingUp, Minus } from "lucide-react";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-];
-
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  raw: {
+    label: "Raw Articles",
     color: "#2563eb",
   },
-  mobile: {
-    label: "Mobile",
+  processed: {
+    label: "Processed Articles",
     color: "#60a5fa",
   },
 } satisfies ChartConfig;
+
+const monthlyData: { month: string; raw: number; processed: number }[] = [
+  { month: "January", raw: 0, processed: 0 },
+  { month: "February", raw: 0, processed: 0 },
+  { month: "March", raw: 0, processed: 0 },
+  { month: "April", raw: 0, processed: 0 },
+  { month: "May", raw: 0, processed: 0 },
+  { month: "June", raw: 0, processed: 0 },
+  { month: "July", raw: 0, processed: 0 },
+  { month: "August", raw: 0, processed: 0 },
+  { month: "September", raw: 0, processed: 0 },
+  { month: "October", raw: 0, processed: 0 },
+  { month: "November", raw: 0, processed: 0 },
+  { month: "December", raw: 0, processed: 0 },
+];
+
+function parseMonthlyCount(data: ArticleCountByMonth[], year: number) {
+  if (!data || data.length === 0) {
+    console.warn("No article data available to parse.");
+    return [];
+  }
+
+  const inYearData = data.filter((item) => {
+    const itemYear = new Date(item.month).getFullYear();
+    return itemYear === year;
+  });
+
+  if (inYearData.length === 0) {
+    console.warn(`No article data found for the year ${year}.`);
+    return [];
+  }
+
+  inYearData.forEach((item) => {
+    const month = new Date(item.month).toLocaleString("default", {
+      month: "long",
+    });
+    const monthData = monthlyData.find((m) => m.month === month);
+    if (monthData) {
+      monthData.raw = item.raw;
+      monthData.processed = item.processed;
+    }
+  });
+
+  console.log("Parsed monthly data:", monthlyData);
+
+  return monthlyData;
+}
 
 export default function OverviewPage() {
   const [data, setData] = useState({
@@ -44,17 +82,25 @@ export default function OverviewPage() {
     },
   });
 
+  const [articlesByMonth, setArticlesByMonth] = useState<
+    { month: string; raw: number; processed: number }[]
+  >([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getData();
-        console.log("Fetched overview data:", data);
+        const articleData = await getArticles();
         setData(data);
+        setArticlesByMonth(
+          parseMonthlyCount(articleData, new Date().getFullYear()),
+        );
       } catch (error) {
         console.error("Error fetching overview data:", error);
       }
     };
     fetchData();
+
     return () => {
       // Cleanup if needed
     };
@@ -65,8 +111,8 @@ export default function OverviewPage() {
       <h2 className="text-5xl font-medium">Hey there, Welcome back!</h2>
       <div className="mt-4 flex w-full flex-col gap-4">
         <div className="grid grid-cols-4 gap-4 tracking-wide">
-          <Card className="flex flex-col justify-between font-mono">
-            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+          <Card className="flex flex-col justify-between">
+            <CardHeader className="flex items-center justify-between gap-4 text-[16px] text-zinc-400/60">
               <div className="">Sources</div>
               <div
                 className={`${true ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
@@ -83,12 +129,14 @@ export default function OverviewPage() {
                 <Label>10%</Label>
               </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
-              {data.totals.sources}
+            <CardContent className="flex flex-col items-center justify-center">
+              <div className="mb-4 text-5xl font-medium tracking-wider">
+                {data.totals.sources}
+              </div>
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+            <CardHeader className="flex items-center justify-between gap-4 text-[16px] text-zinc-400/60">
               <div className="">Raw Articles</div>
               <div
                 className={`${true ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
@@ -105,12 +153,14 @@ export default function OverviewPage() {
                 <Label>20%</Label>
               </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
-              {data.totals.articles}
+            <CardContent className="flex flex-col items-center justify-center">
+              <div className="mb-4 text-5xl font-medium tracking-wider">
+                {data.totals.articles}
+              </div>
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+            <CardHeader className="flex items-center justify-between gap-4 text-[16px] text-zinc-400/60">
               <div className="">Published Articles</div>
               <div
                 className={`${true ? (false ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
@@ -127,12 +177,14 @@ export default function OverviewPage() {
                 <Label>-10%</Label>
               </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
-              {data.totals.processedArticles}
+            <CardContent className="flex flex-col items-center justify-center">
+              <div className="mb-4 text-5xl font-medium tracking-wider">
+                {data.totals.processedArticles}
+              </div>
             </CardContent>
           </Card>
           <Card className="flex flex-col justify-between">
-            <CardHeader className="flex items-center justify-between gap-4 text-lg text-zinc-400/60">
+            <CardHeader className="flex items-center justify-between gap-4 text-[16px] text-zinc-400/60">
               <div className="">Members</div>
               <div
                 className={`${false ? (true ? "text-green-500" : "text-red-500") : "text-zinc-400"} flex items-center gap-1`}
@@ -149,8 +201,10 @@ export default function OverviewPage() {
                 <Label>10%</Label>
               </div>
             </CardHeader>
-            <CardContent className="flex justify-center text-5xl font-medium tracking-wider">
-              {data.totals.members}
+            <CardContent className="flex flex-col items-center justify-center">
+              <div className="mb-4 text-5xl font-medium tracking-wider">
+                {data.totals.members}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -164,17 +218,19 @@ export default function OverviewPage() {
                 config={chartConfig}
                 className="max-h-120 min-h-50 w-full"
               >
-                <BarChart accessibilityLayer data={chartData}>
+                <BarChart accessibilityLayer data={articlesByMonth}>
                   <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    tickMargin={10}
+                    tickFormatter={(tick) => tick.slice(0, 3)}
+                  />
+                  <YAxis tickLine={false} tickFormatter={(tick) => `${tick}`} />
                   <ChartTooltip
                     content={<ChartTooltipContent indicator="dot" hideLabel />}
                   />
-                  <Bar
-                    dataKey="desktop"
-                    fill="var(--color-desktop)"
-                    radius={4}
-                  />
-                  <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                  <Bar dataKey="raw" fill="var(--color-raw)" radius={4} />
                 </BarChart>
               </ChartContainer>
             </CardContent>

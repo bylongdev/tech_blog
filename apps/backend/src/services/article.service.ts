@@ -67,4 +67,18 @@ export class ArticleService {
 			},
 		});
 	}
+
+	async countArticlesByMonth() {
+		return await prisma.$queryRaw<
+			{ month: string; raw: number; processed: number }[]
+		>`
+			SELECT 
+				DATE_TRUNC('month', "publishedAt") AS month, 
+				COUNT(ra.id)::int AS raw,
+				COUNT(ac.id)::int AS processed
+			FROM "RawArticle" as ra, "ArticleCandidate" as ac
+			GROUP BY month
+			ORDER BY month ASC;
+		`;
+	}
 }

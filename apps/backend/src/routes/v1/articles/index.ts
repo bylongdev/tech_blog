@@ -17,6 +17,15 @@ articlesRouter.get(
 );
 
 articlesRouter.get(
+	"/count-by-month",
+	asyncHandler(async (req: Request, res: Response) => {
+		const articleService = new ArticleService();
+		const countByMonth = await articleService.countArticlesByMonth();
+		res.status(200).json({ countByMonth });
+	}),
+);
+
+articlesRouter.get(
 	"/:id",
 	asyncHandler(async (req: Request, res: Response) => {
 		const { id } = req.params;
