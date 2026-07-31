@@ -6,7 +6,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, Line, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { type ChartConfig } from "@/components/ui/chart";
 import { getData, getArticles, ArticleCountByMonth } from "./get-data";
@@ -61,6 +61,7 @@ function parseMonthlyCount(data: ArticleCountByMonth[], year: number) {
       month: "long",
     });
     const monthData = monthlyData.find((m) => m.month === month);
+
     if (monthData) {
       monthData.raw = item.raw;
       monthData.processed = item.processed;
