@@ -57,7 +57,10 @@ export class RawArticleService {
 
 		const existing = await prisma.rawArticle.findUnique({
 			where: {
-				link: data.link,
+				sourceId_guid: {
+					sourceId: data.sourceId,
+					guid: data.guid,
+				},
 			},
 		});
 
@@ -66,8 +69,15 @@ export class RawArticleService {
 			return null;
 		}
 
-		const newArticle = await prisma.rawArticle.create({
-			data,
+		const newArticle = await prisma.rawArticle.upsert({
+			where: {
+				sourceId_guid: {
+					sourceId: data.sourceId,
+					guid: data.guid,
+				},
+			},
+			update: {},
+			create: data,
 		});
 
 		if (!newArticle) {
@@ -98,8 +108,16 @@ export class RawArticleService {
 			);
 		}
 
-		return prisma.articleCandidate.create({
-			data: {
+		return prisma.articleCandidate.upsert({
+			where: {
+				rawArticleId: article.rawArticleId,
+			},
+			update: {
+				cleanedTitle: article.cleanedTitle,
+				embeddingText: article.embeddingText,
+				status: "QUEUED",
+			},
+			create: {
 				rawArticleId: article.rawArticleId,
 				cleanedTitle: article.cleanedTitle,
 				embeddingText: article.embeddingText,
