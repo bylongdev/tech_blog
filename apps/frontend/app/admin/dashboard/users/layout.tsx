@@ -2,15 +2,15 @@ import { requireAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function UserLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	const auth = await requireAuth();
+  const auth = await requireAuth();
 
-	if (!auth) {
-		redirect("/dashboard");
-	}
+  if (!auth) {
+    redirect("/admin/dashboard");
+  }
 
-	return children;
+  return children;
 }

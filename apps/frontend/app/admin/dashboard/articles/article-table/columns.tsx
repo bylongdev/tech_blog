@@ -25,12 +25,16 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Copy, Check } from "lucide-react";
 import Link from "next/link";
 
-export type User = {
+export type Article = {
 	id: string;
-	email: string;
-	name?: string;
-	role: string;
-	isActive: boolean;
+	rawArticleId: string;
+
+	category?: string;
+	subCategory?: string;
+	class?: string;
+	status: string;
+
+	createdAt: string;
 };
 
 function HiddenCell({ value }: { value: string }) {
@@ -68,37 +72,37 @@ function HiddenCell({ value }: { value: string }) {
 	);
 }
 
-export const columns: ColumnDef<User>[] = [
-	/* {
+export const columns: ColumnDef<Article>[] = [
+	{
 		accessorKey: "id",
 		header: "ID",
 		cell: ({ row }) => {
 			return <HiddenCell value={row.getValue("id")} />;
 		},
-	}, */
+	},
 	{
-		accessorKey: "email",
-		header: "Email",
+		accessorKey: "rawArticleId",
+		header: "Raw Article ID",
 		cell: ({ row }) => {
-			return <HiddenCell value={row.getValue("email")} />;
+			return <HiddenCell value={row.getValue("rawArticleId")} />;
 		},
 	},
 	{
-		accessorKey: "name",
+		accessorKey: "category",
 		header: ({ column }) => {
 			return (
 				<Button
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Name
+					Category
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			);
 		},
 	},
 	{
-		accessorKey: "role",
+		accessorKey: "subCategory",
 
 		header: ({ column }) => {
 			return (
@@ -106,14 +110,36 @@ export const columns: ColumnDef<User>[] = [
 					variant="ghost"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
 				>
-					Role
+					Sub Category
 					<ArrowUpDown className="ml-2 h-4 w-4" />
 				</Button>
 			);
 		},
+		cell: ({ row }) => {
+			const article = row.original;
+			return <span className="capitalize">{article.subCategory}</span>;
+		},
 	},
 	{
-		accessorKey: "isActive",
+		accessorKey: "class",
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Class
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			);
+		},
+		cell: ({ row }) => {
+			const article = row.original;
+			return <span className="capitalize">{article.class}</span>;
+		},
+	},
+	{
+		accessorKey: "status",
 		header: ({ column }) => {
 			return (
 				<Button
@@ -126,23 +152,37 @@ export const columns: ColumnDef<User>[] = [
 			);
 		},
 		cell: ({ row }) => {
-			const isActive = row.getValue("isActive");
+			const article = row.original;
+			const statusColor =
+				{
+					queued: "text-yellow-500",
+					processed: "text-blue-500",
+					extracted: "text-green-500",
+					failed: "text-red-500",
+				}[article.status.toLowerCase()] || "text-gray-500";
 			return (
-				<span
-					className={`${
-						isActive ? "text-green-500" : "text-red-500"
-					} font-medium`}
-				>
-					{isActive ? "Active" : "Inactive"}
-				</span>
+				<span className={`${statusColor} font-medium`}>{article.status}</span>
 			);
-			// return isActive ? "Active" : "Inactive";
+		},
+	},
+	{
+		accessorKey: "createdAt",
+		header: ({ column }) => {
+			return (
+				<Button
+					variant="ghost"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+				>
+					Created At
+					<ArrowUpDown className="ml-2 h-4 w-4" />
+				</Button>
+			);
 		},
 	},
 	{
 		id: "actions",
 		cell: ({ row }) => {
-			const user = row.original;
+			const article = row.original;
 
 			return (
 				<DropdownMenu>
@@ -165,7 +205,7 @@ export const columns: ColumnDef<User>[] = [
 
 							<DropdownMenuItem
 								className="flex items-center gap-2"
-								onClick={() => navigator.clipboard.writeText(user.id)}
+								onClick={() => navigator.clipboard.writeText(article.id)}
 							>
 								<span className="scale-90">
 									<CopyIcon />
@@ -179,7 +219,7 @@ export const columns: ColumnDef<User>[] = [
 						<DropdownMenuGroup>
 							<DropdownMenuItem
 								className="flex items-center gap-2"
-								render={<Link href={`/dashboard/users/${user.id}`} />}
+								render={<Link href={`/admin/dashboard/articles/${article.id}`} />}
 								nativeButton={false}
 							>
 								<span className="scale-90">
@@ -189,7 +229,7 @@ export const columns: ColumnDef<User>[] = [
 							</DropdownMenuItem>
 							{/* <DropdownMenuItem
 								className="flex items-center gap-2"
-								render={<Link href={`/dashboard/articles/${article.id}`} />}
+								render={<Link href={`/admin/dashboard/articles/${article.id}`} />}
 								nativeButton={false}
 							>
 								<span className="scale-90">

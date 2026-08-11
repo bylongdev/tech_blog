@@ -49,7 +49,7 @@ export function UserHeader({ user }: { user: UserDetail }) {
 			<Button
 				variant="ghost"
 				size="sm"
-				render={<Link href="/dashboard/users" />}
+				render={<Link href="/admin/dashboard/users" />}
 				nativeButton={false}
 			>
 				<ArrowLeft />

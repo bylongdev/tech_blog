@@ -87,7 +87,7 @@ export function ArticleHeader({ article }: { article: ArticleDetail }) {
 			<Button
 				variant="ghost"
 				size="sm"
-				render={<Link href="/dashboard/articles" />}
+				render={<Link href="/admin/dashboard/articles" />}
 				nativeButton={false}
 			>
 				<ArrowLeft />
