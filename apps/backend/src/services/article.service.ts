@@ -74,8 +74,8 @@ export class ArticleService {
 		>`
 			SELECT 
 				DATE_TRUNC('month', "publishedAt") AS month, 
-				COUNT(ra.id)::int AS raw,
-				COUNT(ac.id)::int AS processed
+				COUNT(DISTINCT ra.id)::int AS raw,
+				COUNT(DISTINCT ac.id)::int AS processed
 			FROM "RawArticle" as ra, "ArticleCandidate" as ac
 			GROUP BY month
 			ORDER BY month ASC;

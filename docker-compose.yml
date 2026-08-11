@@ -105,19 +105,18 @@ services:
       retries: 12
       start_period: 10s
 
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    command:
-      - tunnel
-      - --no-autoupdate
-      - run
-      - --token
-      - ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in .env}
-    depends_on:
-      backend:
-        condition: service_healthy
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: unless-stopped
+  #   command:
+  #     - tunnel
+  #     - --no-autoupdate
+  #     - run
+  #     - --token
+  #     - ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in .env}
+  #   depends_on:
+  #     backend:
+  #       condition: service_healthy
 
   # frontend:
   #   image: techblog-frontend:local
