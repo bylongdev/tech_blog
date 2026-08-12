@@ -1,10 +1,26 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import React from "react";
 
 type Props = {
   children?: React.ReactNode;
 };
 
+const CATEGORIES = [
+  "all",
+  "ai",
+  "dev",
+  "cloud",
+  "security",
+  "infrastructure",
+  "tools",
+];
+
 function News({}: Props) {
+  const [selectedCategory, setSelectedCategory] = React.useState("all");
+
   return (
     <div className="min-h-dvh min-w-dvw bg-zinc-600">
       <main className="m-auto flex h-full w-full max-w-10/12 items-center justify-center bg-teal-600">
@@ -17,20 +33,27 @@ function News({}: Props) {
                 <span>Without the noise.</span>
               </div>
             </div>
-            <div className="">Search Bar</div>
+            <div className="">
+              <Input placeholder="Search..." />
+            </div>
             <div className="flex">
               <div className="">Dark Mode</div>
               <div className="">Profile</div>
             </div>
           </div>
 
-          <div className="flex flex-1 gap-4 px-12">
-            <div className="">AI</div>
-            <div className="">Dev</div>
-            <div className="">Cloud</div>
-            <div className="">Security</div>
-            <div className="">Infrastructure</div>
-            <div className="">Tools</div>
+          <div className="flex bg-zinc-700 px-12">
+            {CATEGORIES.map((category) => (
+              <Button
+                key={category}
+                variant="ghost"
+                className={`rounded-none border-0 border-b-2 p-4 text-zinc-300/70 hover:text-zinc-100 ${category === "ai" ? "uppercase" : "capitalize"} ${selectedCategory === category ? "border-zinc-100 text-zinc-100" : "border-transparent"}`}
+
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </Button>
+            ))}
           </div>
         </section>
       </main>
