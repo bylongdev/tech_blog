@@ -1,7 +1,12 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { useTheme } from "next-themes";
 import React from "react";
 
 type Props = {
@@ -20,25 +25,35 @@ const CATEGORIES = [
 
 function News({}: Props) {
   const [selectedCategory, setSelectedCategory] = React.useState("all");
+  const { setTheme } = useTheme();
 
   return (
-    <div className="min-h-dvh min-w-dvw bg-zinc-600">
-      <main className="m-auto flex h-full w-full max-w-10/12 items-center justify-center bg-teal-600">
-        <section className="flex flex-1 flex-col">
-          <div className="flex flex-1 items-center justify-between px-8 py-4">
-            <div className="flex items-center">
-              <div className="bg-amber-600 p-2 text-3xl font-medium">TL;DR</div>
-              <div className="flex flex-col text-sm">
+    <div className="min-h-dvh min-w-dvw">
+      <main className="m-auto flex h-full w-full max-w-10/12 flex-col items-center justify-center gap-4">
+        <section className="flex w-full flex-col">
+          <div className="flex items-center justify-between px-8 py-4">
+            <div className="flex items-center gap-2">
+              <div className="p-4 text-5xl font-semibold">TL;DR</div>
+              <div className="flex flex-col text-xs">
                 <span>Tech News</span>
                 <span>Without the noise.</span>
               </div>
             </div>
-            <div className="">
-              <Input placeholder="Search..." />
-            </div>
-            <div className="flex">
-              <div className="">Dark Mode</div>
-              <div className="">Profile</div>
+            <Field className="w-xl" orientation="horizontal">
+              <Input id="input-search" placeholder="Search..." type="search" />
+              <Button>Search</Button>
+            </Field>
+            <div className="flex items-center gap-4">
+              <Switch
+                id="theme-switch"
+                onCheckedChange={() =>
+                  setTheme((prev) => (prev === "dark" ? "light" : "dark"))
+                }
+              />
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
             </div>
           </div>
 
@@ -54,6 +69,47 @@ function News({}: Props) {
                 {category}
               </Button>
             ))}
+          </div>
+        </section>
+        <section className="flex w-full flex-1 flex-col px-6">
+          <Card>
+            <CardHeader>
+              <Avatar className="mr-4 h-12 w-12">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              Good, {new Date().toLocaleDateString()}, User
+            </CardHeader>
+            <CardContent>
+              We will fetch and display news articles based on the selected
+              category. Stay tuned for updates!
+            </CardContent>
+          </Card>
+        </section>
+
+        <section className="flex w-full flex-1 flex-col px-6">
+          <div className="">Latest News</div>
+          <div className="">
+            <Card>
+              <CardContent className="flex gap-4">
+                <Avatar className="h-12 w-12">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+
+                <div className="">
+                  Content of the news article will be displayed here. This is a
+                  placeholder for the actual news content that will be fetched
+                  based on the selected category.
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <span className="">Author: John Doe</span>
+                  <span className="">2 mins reading</span>
+                  <Button variant="link">Read More</Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
       </main>
