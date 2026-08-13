@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import React, { useState, useEffect } from "react";
 
@@ -36,6 +37,10 @@ type Article = {
   createdAt: string;
   status: string;
   rawArticle: {
+    content: string;
+    author: string;
+    link: string;
+    publishedAt: string;
     source: {
       name: string;
     };
@@ -144,18 +149,41 @@ function News({}: Props) {
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
 
-                      <div className="">
-                        <h3 className="">{article.cleanedTitle}</h3>
-                        <div className="">{article.summary}</div>
+                      <div className="flex flex-col gap-4">
+                        <h3 className="text-xl font-medium">
+                          {article.cleanedTitle}
+                        </h3>
+                        <p className="text-muted-foreground indent-4">
+                          {article.summary}
+                        </p>
                       </div>
                     </div>
 
-                    <div className="flex flex-1 flex-col items-start justify-between gap-2 px-8">
-                      <span className="">Author: John Doe</span>
-                      <span className="">2 mins reading</span>
-                      <Button variant="link" className="self-end">
-                        Read More
-                      </Button>
+                    <div className="flex flex-1 flex-col items-start justify-between gap-2">
+                      <span className="">
+                        Author: {article.rawArticle.author}
+                      </span>
+                      <span className="">
+                        Published At:{" "}
+                        {new Date(
+                          article.rawArticle.publishedAt,
+                        ).toLocaleDateString()}
+                      </span>
+
+                      <span className="">
+                        {Math.ceil(
+                          article.rawArticle.content.split(" ").length / 200,
+                        )}{" "}
+                        mins reading
+                      </span>
+
+                      <Link
+                        href={article.rawArticle.link}
+                        target="_blank"
+                        className="self-end"
+                      >
+                        <Button variant="link">Read More</Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

@@ -103,7 +103,9 @@ export class ArticleServiceV2 {
 				status: true,
 				rawArticle: {
 					select: {
+						content: true,
 						author: true,
+						link: true,
 						publishedAt: true,
 						source: {
 							select: {
