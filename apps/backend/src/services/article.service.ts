@@ -82,3 +82,36 @@ export class ArticleService {
 		`;
 	}
 }
+
+export class ArticleServiceV2 {
+	async listArticles() {
+		return await prisma.articleCandidate.findMany({
+			orderBy: {
+				createdAt: "desc",
+			},
+			select: {
+				id: true,
+				category: true,
+				subCategory: true,
+				class: true,
+				entities: true,
+				products: true,
+				event: true,
+				summary: true,
+				createdAt: true,
+				status: true,
+				rawArticle: {
+					select: {
+						source: {
+							select: {
+								name: true,
+							},
+						},
+					},
+				},
+			},
+			skip: 0,
+			take: 10,
+		});
+	}
+}

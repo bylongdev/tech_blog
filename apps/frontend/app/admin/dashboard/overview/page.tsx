@@ -25,25 +25,25 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const monthlyData: { month: string; raw: number; processed: number }[] = [
-  { month: "January", raw: 0, processed: 0 },
-  { month: "February", raw: 0, processed: 0 },
-  { month: "March", raw: 0, processed: 0 },
-  { month: "April", raw: 0, processed: 0 },
-  { month: "May", raw: 0, processed: 0 },
-  { month: "June", raw: 0, processed: 0 },
-  { month: "July", raw: 0, processed: 0 },
-  { month: "August", raw: 0, processed: 0 },
-  { month: "September", raw: 0, processed: 0 },
-  { month: "October", raw: 0, processed: 0 },
-  { month: "November", raw: 0, processed: 0 },
-  { month: "December", raw: 0, processed: 0 },
-];
-
 function parseMonthlyCount(data: ArticleCountByMonth[], year: number) {
+  const monthlyData = [
+    { month: "January", raw: 0, processed: 0 },
+    { month: "February", raw: 0, processed: 0 },
+    { month: "March", raw: 0, processed: 0 },
+    { month: "April", raw: 0, processed: 0 },
+    { month: "May", raw: 0, processed: 0 },
+    { month: "June", raw: 0, processed: 0 },
+    { month: "July", raw: 0, processed: 0 },
+    { month: "August", raw: 0, processed: 0 },
+    { month: "September", raw: 0, processed: 0 },
+    { month: "October", raw: 0, processed: 0 },
+    { month: "November", raw: 0, processed: 0 },
+    { month: "December", raw: 0, processed: 0 },
+  ];
+
   if (!data || data.length === 0) {
     console.warn("No article data available to parse.");
-    return [];
+    return monthlyData;
   }
 
   const inYearData = data.filter((item) => {
@@ -53,23 +53,21 @@ function parseMonthlyCount(data: ArticleCountByMonth[], year: number) {
 
   if (inYearData.length === 0) {
     console.warn(`No article data found for the year ${year}.`);
-    return [];
+    return monthlyData;
   }
 
   inYearData.forEach((item) => {
     const month = new Date(item.month).toLocaleString("default", {
       month: "long",
     });
-    const monthData = monthlyData.find((m) => m.month === month);
 
-    if (monthData) {
-      monthData.raw = item.raw;
-      monthData.processed = item.processed;
-    }
+    monthlyData.forEach((monthData) => {
+      if (monthData.month === month) {
+        monthData.raw = item.raw;
+        monthData.processed = item.processed;
+      }
+    });
   });
-
-  console.log("Parsed monthly data:", monthlyData);
-
   return monthlyData;
 }
 

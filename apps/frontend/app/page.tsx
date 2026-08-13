@@ -29,7 +29,7 @@ function News({}: Props) {
 
   return (
     <div className="min-h-dvh min-w-dvw">
-      <main className="m-auto flex h-full w-full max-w-10/12 flex-col items-center justify-center gap-4">
+      <main className="m-auto flex h-full w-10/12 max-w-7xl flex-col items-center justify-center gap-4">
         <section className="flex w-full flex-col">
           <div className="flex items-center justify-between px-8 py-4">
             <div className="flex items-center gap-2">
@@ -71,14 +71,14 @@ function News({}: Props) {
             ))}
           </div>
         </section>
-        <section className="flex w-full flex-1 flex-col px-6">
+        <section className="flex w-full flex-1 flex-col">
           <Card>
             <CardHeader>
               <Avatar className="mr-4 h-12 w-12">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              Good, {new Date().toLocaleDateString()}, User
+              Good Morning, User
             </CardHeader>
             <CardContent>
               We will fetch and display news articles based on the selected
@@ -87,26 +87,41 @@ function News({}: Props) {
           </Card>
         </section>
 
-        <section className="flex w-full flex-1 flex-col px-6">
-          <div className="">Latest News</div>
+        <section className="flex w-full flex-1 flex-col">
+          <div className="pb-2">Latest News</div>
           <div className="">
             <Card>
-              <CardContent className="flex gap-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+              <CardContent className="flex gap-12">
+                <div className="flex items-center justify-center gap-4">
+                  <Avatar className="h-12 w-12">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
 
-                <div className="">
-                  Content of the news article will be displayed here. This is a
-                  placeholder for the actual news content that will be fetched
-                  based on the selected category.
+                  <div className="">
+                    <h3 className="">Title</h3>
+                    <div className="">
+                      Content of the news article will be displayed here. This
+                      is a placeholder for the actual news content that will be
+                      fetched based on the selected category. lorem ipsum dolor
+                      sit amet, consectetur adipiscing elit. Sed do eiusmod
+                      tempor incididunt ut labore et dolore magna aliqua. Ut
+                      enim ad minim veniam, quis nostrud exercitation ullamco
+                      laboris nisi ut aliquip ex ea commodo consequat. lorem
+                      ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                      eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex w-xl flex-col items-start justify-between gap-2">
                   <span className="">Author: John Doe</span>
                   <span className="">2 mins reading</span>
-                  <Button variant="link">Read More</Button>
+                  <Button variant="link" className="self-end">
+                    Read More
+                  </Button>
                 </div>
               </CardContent>
             </Card>

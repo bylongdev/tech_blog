@@ -3,8 +3,11 @@ import { articlesRouter } from "./articles/index.js";
 import { sourcesRouter } from "./sources/index.js";
 import { usersRouter } from "./users/index.js";
 import { overviewRouter } from "./overview/index.js";
+import { healthRouter } from "./health.route.js";
 
 export const v1Router: Router = Router();
+
+v1Router.use("/health", healthRouter);
 
 v1Router.use("/articles", articlesRouter);
 v1Router.use("/sources", sourcesRouter);
