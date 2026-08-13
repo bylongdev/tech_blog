@@ -91,6 +91,7 @@ export class ArticleServiceV2 {
 			},
 			select: {
 				id: true,
+				cleanedTitle: true,
 				category: true,
 				subCategory: true,
 				class: true,
@@ -102,6 +103,8 @@ export class ArticleServiceV2 {
 				status: true,
 				rawArticle: {
 					select: {
+						author: true,
+						publishedAt: true,
 						source: {
 							select: {
 								name: true,

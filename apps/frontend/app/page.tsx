@@ -7,7 +7,7 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useTheme } from "next-themes";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 type Props = {
   children?: React.ReactNode;
@@ -23,9 +23,53 @@ const CATEGORIES = [
   "tools",
 ];
 
+type Article = {
+  id: string;
+  cleanedTitle: string;
+  category: string;
+  subCategory: string;
+  class: string;
+  entities: string[];
+  products: string[];
+  event: string;
+  summary: string;
+  createdAt: string;
+  status: string;
+  rawArticle: {
+    source: {
+      name: string;
+    };
+  };
+};
+
 function News({}: Props) {
-  const [selectedCategory, setSelectedCategory] = React.useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const { setTheme } = useTheme();
+
+  const [articles, setArticles] = useState([] as Article[]);
+
+  useEffect(() => {
+    // Fetch articles based on the selected category
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/api/v2/articles`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Category: selectedCategory,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch articles");
+        }
+        const data = await response.json();
+        setArticles(data.articles);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+    fetchArticles();
+  }, [selectedCategory]);
 
   return (
     <div className="min-h-dvh min-w-dvw">
@@ -90,41 +134,35 @@ function News({}: Props) {
         <section className="flex w-full flex-1 flex-col">
           <div className="pb-2">Latest News</div>
           <div className="">
-            <Card>
-              <CardContent className="flex gap-12">
-                <div className="flex items-center justify-center gap-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
+            {articles.length > 0 ? (
+              articles.map((article) => (
+                <Card key={article.id}>
+                  <CardContent className="flex gap-12">
+                    <div className="flex items-center justify-center gap-4">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
 
-                  <div className="">
-                    <h3 className="">Title</h3>
-                    <div className="">
-                      Content of the news article will be displayed here. This
-                      is a placeholder for the actual news content that will be
-                      fetched based on the selected category. lorem ipsum dolor
-                      sit amet, consectetur adipiscing elit. Sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua. Ut
-                      enim ad minim veniam, quis nostrud exercitation ullamco
-                      laboris nisi ut aliquip ex ea commodo consequat. lorem
-                      ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                      eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                      <div className="">
+                        <h3 className="">{article.cleanedTitle}</h3>
+                        <div className="">{article.summary}</div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="flex w-xl flex-col items-start justify-between gap-2">
-                  <span className="">Author: John Doe</span>
-                  <span className="">2 mins reading</span>
-                  <Button variant="link" className="self-end">
-                    Read More
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                    <div className="flex w-xl flex-col items-start justify-between gap-2">
+                      <span className="">Author: John Doe</span>
+                      <span className="">2 mins reading</span>
+                      <Button variant="link" className="self-end">
+                        Read More
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div>No articles available.</div>
+            )}
           </div>
         </section>
       </main>
