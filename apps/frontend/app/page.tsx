@@ -133,12 +133,12 @@ function News({}: Props) {
 
         <section className="flex w-full flex-1 flex-col">
           <div className="pb-2">Latest News</div>
-          <div className="">
+          <div className="flex flex-col gap-4">
             {articles.length > 0 ? (
               articles.map((article) => (
                 <Card key={article.id}>
-                  <CardContent className="flex gap-12">
-                    <div className="flex items-center justify-center gap-4">
+                  <CardContent className="grid grid-cols-5 gap-12">
+                    <div className="col-span-4 flex items-center justify-center gap-4">
                       <Avatar className="h-12 w-12">
                         <AvatarImage src="https://github.com/shadcn.png" />
                         <AvatarFallback>CN</AvatarFallback>
@@ -150,7 +150,7 @@ function News({}: Props) {
                       </div>
                     </div>
 
-                    <div className="flex w-xl flex-col items-start justify-between gap-2">
+                    <div className="flex flex-1 flex-col items-start justify-between gap-2 px-8">
                       <span className="">Author: John Doe</span>
                       <span className="">2 mins reading</span>
                       <Button variant="link" className="self-end">
