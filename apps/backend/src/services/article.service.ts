@@ -106,6 +106,7 @@ export class ArticleServiceV2 {
 						content: true,
 						author: true,
 						link: true,
+						imageUrl: true,
 						publishedAt: true,
 						source: {
 							select: {
