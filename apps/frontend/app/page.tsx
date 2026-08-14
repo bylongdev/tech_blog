@@ -12,6 +12,7 @@ import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 type Props = {
   children?: React.ReactNode;
@@ -43,6 +44,7 @@ type Article = {
     content: string;
     author: string;
     link: string;
+    imageUrl: string;
     publishedAt: string;
     source: {
       name: string;
@@ -147,11 +149,19 @@ function News({}: Props) {
                 <Card key={article.id}>
                   <CardContent className="grid grid-cols-5 gap-12">
                     <div className="col-span-4 flex items-center justify-center gap-4">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src="https://github.com/shadcn.png" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-
+                      {/* {article.rawArticle.imageUrl?.[0] ? (
+                        <Image
+                          src={
+                            article.rawArticle.imageUrl?.[0] ||
+                            "/images/placeholder.jpg"
+                          }
+                          alt={article.cleanedTitle}
+                          style={{ objectFit: "cover" }}
+                          width={200}
+                          height={100}
+                          className="aspect-3/4 h-full object-contain object-left"
+                        />
+                      ) : null} */}
                       <div className="flex flex-col gap-4">
                         <h3 className="text-xl font-medium">
                           {article.cleanedTitle}
