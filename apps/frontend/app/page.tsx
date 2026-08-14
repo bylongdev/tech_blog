@@ -12,7 +12,7 @@ import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
+import ArticleCard from "@/components/article-card";
 
 type Props = {
   children?: React.ReactNode;
@@ -28,58 +28,9 @@ const CATEGORIES = [
   "tools",
 ];
 
-type Article = {
-  id: string;
-  cleanedTitle: string;
-  category: string;
-  subCategory: string;
-  class: string;
-  entities: string[];
-  products: string[];
-  event: string;
-  summary: string;
-  createdAt: string;
-  status: string;
-  rawArticle: {
-    content: string;
-    author: string;
-    link: string;
-    imageUrl: string;
-    publishedAt: string;
-    source: {
-      name: string;
-    };
-  };
-};
-
 function News({}: Props) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { setTheme } = useTheme();
-
-  const [articles, setArticles] = useState([] as Article[]);
-
-  useEffect(() => {
-    // Fetch articles based on the selected category
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/api/v2/articles`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Category: selectedCategory,
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch articles");
-        }
-        const data = await response.json();
-        setArticles(data.articles);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      }
-    };
-    fetchArticles();
-  }, [selectedCategory]);
 
   return (
     <div className="min-h-dvh min-w-dvw">
@@ -143,71 +94,7 @@ function News({}: Props) {
 
         <section className="flex w-full flex-1 flex-col">
           <div className="pb-2">Latest News</div>
-          <div className="flex flex-col gap-4">
-            {articles.length > 0 ? (
-              articles.map((article) => (
-                <Card key={article.id}>
-                  <CardContent className="grid grid-cols-5 gap-12">
-                    <div className="col-span-4 flex items-center justify-center gap-4">
-                      {/* {article.rawArticle.imageUrl?.[0] ? (
-                        <Image
-                          src={
-                            article.rawArticle.imageUrl?.[0] ||
-                            "/images/placeholder.jpg"
-                          }
-                          alt={article.cleanedTitle}
-                          style={{ objectFit: "cover" }}
-                          width={200}
-                          height={100}
-                          className="aspect-3/4 h-full object-contain object-left"
-                        />
-                      ) : null} */}
-                      <div className="flex flex-col gap-4">
-                        <h3 className="text-xl font-medium">
-                          {article.cleanedTitle}
-                        </h3>
-                        <p className="text-muted-foreground indent-4">
-                          {article.summary}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-1 flex-col items-start justify-between gap-2">
-                      <div className="flex w-full flex-col gap-3 text-sm text-zinc-400">
-                        <Label className="">
-                          {formatDistanceToNow(
-                            new Date(article.rawArticle.publishedAt),
-                            { addSuffix: true },
-                          )}
-                        </Label>
-                        <Label className="">
-                          Author: {article.rawArticle.author}
-                        </Label>
-
-                        <Label className="">
-                          {Math.ceil(
-                            article.rawArticle.content.split(" ").length / 200,
-                          )}{" "}
-                          mins read
-                        </Label>
-                      </div>
-                      <Link
-                        href={article.rawArticle.link}
-                        target="_blank"
-                        className="flex items-center self-end"
-                      >
-                        <Button variant="default" size="sm">
-                          Read More <SquareArrowOutUpRight />
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div>No articles available.</div>
-            )}
-          </div>
+          <ArticleCard selectedCategory={selectedCategory} />
         </section>
       </main>
     </div>
