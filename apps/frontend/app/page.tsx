@@ -9,6 +9,9 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import React, { useState, useEffect } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { SquareArrowOutUpRight } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 type Props = {
   children?: React.ReactNode;
@@ -78,7 +81,7 @@ function News({}: Props) {
 
   return (
     <div className="min-h-dvh min-w-dvw">
-      <main className="m-auto flex h-full w-10/12 max-w-7xl flex-col items-center justify-center gap-4">
+      <main className="m-auto flex h-full w-10/12 max-w-7xl min-w-4xl flex-col items-center justify-center gap-4">
         <section className="flex w-full flex-col">
           <div className="flex items-center justify-between px-8 py-4">
             <div className="flex items-center gap-2">
@@ -160,29 +163,32 @@ function News({}: Props) {
                     </div>
 
                     <div className="flex flex-1 flex-col items-start justify-between gap-2">
-                      <span className="">
-                        Author: {article.rawArticle.author}
-                      </span>
-                      <span className="">
-                        Published At:{" "}
-                        {new Date(
-                          article.rawArticle.publishedAt,
-                        ).toLocaleDateString()}
-                      </span>
+                      <div className="flex w-full flex-col gap-3 text-sm text-zinc-400">
+                        <Label className="">
+                          {formatDistanceToNow(
+                            new Date(article.rawArticle.publishedAt),
+                            { addSuffix: true },
+                          )}
+                        </Label>
+                        <Label className="">
+                          Author: {article.rawArticle.author}
+                        </Label>
 
-                      <span className="">
-                        {Math.ceil(
-                          article.rawArticle.content.split(" ").length / 200,
-                        )}{" "}
-                        mins reading
-                      </span>
-
+                        <Label className="">
+                          {Math.ceil(
+                            article.rawArticle.content.split(" ").length / 200,
+                          )}{" "}
+                          mins read
+                        </Label>
+                      </div>
                       <Link
                         href={article.rawArticle.link}
                         target="_blank"
-                        className="self-end"
+                        className="flex items-center self-end"
                       >
-                        <Button variant="link">Read More</Button>
+                        <Button variant="default" size="sm">
+                          Read More <SquareArrowOutUpRight />
+                        </Button>
                       </Link>
                     </div>
                   </CardContent>
