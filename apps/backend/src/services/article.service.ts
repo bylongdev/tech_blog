@@ -81,6 +81,12 @@ export class ArticleService {
 			ORDER BY month ASC;
 		`;
 	}
+
+	async deleteArticleById(id: string) {
+		return await prisma.articleCandidate.delete({
+			where: { id },
+		});
+	}
 }
 
 export class ArticleServiceV2 {

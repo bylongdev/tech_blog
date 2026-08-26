@@ -44,3 +44,21 @@ articlesRouter.get(
 		res.status(200).json({ article });
 	}),
 );
+
+// Delete an article by ID
+articlesRouter.delete(
+	"/:id",
+	asyncHandler(async (req: Request, res: Response) => {
+		const { id } = req.params;
+		if (!id || Array.isArray(id)) {
+			throw new HttpError(400, "Article ID is required.");
+		}
+		const articleService = new ArticleService();
+		const deletedArticle = await articleService.deleteArticleById(id);
+
+		if (!deletedArticle) {
+			throw new HttpError(404, "Article not found.");
+		}
+		res.status(200).json({ message: "Article deleted successfully." });
+	}),
+);
