@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Separator } from "./ui/separator";
 
 type Article = {
   id: string;
@@ -61,8 +62,8 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
       {articles.length > 0 ? (
         articles.map((article) => (
           <Card key={article.id} className="p-4">
-            <CardContent className="grid grid-cols-5 gap-12">
-              <div className="col-span-4 flex items-center justify-center gap-4">
+            <CardContent className="flex gap-8">
+              <div className="flex items-center justify-center gap-4">
                 {/* {article.rawArticle.imageUrl?.[0] ? (
                         <Image
                           src={
@@ -85,8 +86,10 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
                 </div>
               </div>
 
+              <Separator orientation="vertical" className="" />
+
               <div className="flex flex-1 flex-col items-start justify-between gap-2">
-                <div className="flex w-full flex-col gap-3 text-sm text-zinc-400">
+                <div className="flex w-full flex-col gap-3 text-sm text-zinc-400/60">
                   <Label className="">
                     {formatDistanceToNow(
                       new Date(article.rawArticle.publishedAt),
@@ -106,9 +109,9 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
                 <Link
                   href={article.rawArticle.link}
                   target="_blank"
-                  className="flex items-center self-end"
+                  className="flex items-center"
                 >
-                  <Button variant="default" size="sm">
+                  <Button variant="outline" size="sm">
                     Read More <SquareArrowOutUpRight />
                   </Button>
                 </Link>

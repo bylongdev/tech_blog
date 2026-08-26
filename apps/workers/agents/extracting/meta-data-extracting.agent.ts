@@ -104,8 +104,7 @@ class MetaDataExtractingAgent extends OpenAIClient {
     - Length: 60–150 words.
     - Focus on the most important information only.
     - Ensure the actor/subject is correct. Do not attribute a product feature to an underlying technology unless explicitly stated.
-
-    Structure:
+    - Structure:
 
     1. What happened?
     - Explain the primary announcement, release, incident or change.
@@ -120,6 +119,27 @@ class MetaDataExtractingAgent extends OpenAIClient {
     - Write a short catchy closing sentence.
     - The closing sentence should be natural, memorable, and slightly editorial, but not clickbait.
     - Keep the actor/subject correct.
+
+    8. keypoints
+    - Provide 3–5 key points from the article.
+    - Each key point should be a single sentence.
+    - Focus on the most important information only.
+    - Ensure the actor/subject is correct. Do not attribute a product feature to an underlying technology unless explicitly stated.
+
+    9. tldr
+    - Create a concise, structured TL;DR of the article.
+    - Return the TL;DR using the following structure:
+      - headline: One concise sentence capturing the article's main development or takeaway.
+      - context: One short sentence providing the essential context needed to understand the headline.
+      - points: 2–3 of the most important takeaways from the article.
+        - label: A short descriptive label, preferably 1–4 words (e.g. "How it works", "What's new", "Why it matters", "Impact", "Safety").
+        - detail: One concise sentence explaining the takeaway.
+    - Select labels dynamically based on the article's content; do not force predefined labels when they are not relevant.
+    - Avoid repeating the same information across headline, context, and points.
+    - Prioritise concrete facts, changes, mechanisms, impact, and significance.
+    - Keep each point independently understandable and easy to scan.
+    - Preserve the correct actor/subject. Do not attribute a product, feature, action, or capability to an underlying technology unless explicitly stated in the article.
+    - Do not introduce assumptions, speculation, or information not supported by the article.
 
     </Instructions>
 
@@ -148,7 +168,16 @@ class MetaDataExtractingAgent extends OpenAIClient {
       "entities": [],
       "products": [],
       "event": "",
-      "summary": ""
+      "summary": "",
+      "tldr": {
+        "headline": "",
+        "context": "",
+        "points": {
+          "label": "",
+          "detail": ""
+        }
+      }
+
     }
 
     </Output>
@@ -171,6 +200,22 @@ class MetaDataExtractingAgent extends OpenAIClient {
 				},
 				event: { type: "string" },
 				summary: { type: "string" },
+				tldr: {
+					type: "object",
+					additionalProperties: false,
+					properties: {
+						headline: { type: "string" },
+						context: { type: "string" },
+						points: {
+							type: "object",
+							additionalProperties: false,
+							properties: {
+								label: { type: "string" },
+								detail: { type: "string" },
+							},
+						},
+					},
+				},
 			},
 			required: [
 				"category",
@@ -180,6 +225,7 @@ class MetaDataExtractingAgent extends OpenAIClient {
 				"products",
 				"event",
 				"summary",
+				"tldr",
 			],
 		};
 

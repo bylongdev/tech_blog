@@ -133,7 +133,7 @@ export function AppSidebar({ user }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton
               size="lg"
-              render={<Link href="/dashboard" />}
+              render={<Link href="/admin/dashboard" />}
               tooltip="Tech Blog"
               onClick={() => setOpenMobile(false)}
             >

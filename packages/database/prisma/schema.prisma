@@ -68,6 +68,7 @@ model ArticleCandidate {
   products    String[]
   event       String?
   summary     String?
+  tldr        Json?
 
   cleanedTitle  String
   embeddingText String

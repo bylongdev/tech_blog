@@ -6,12 +6,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import Link from "next/link";
 import { useTheme } from "next-themes";
-import React, { useState, useEffect } from "react";
-import { formatDistanceToNow } from "date-fns";
-import { SquareArrowOutUpRight } from "lucide-react";
-import { Label } from "@/components/ui/label";
+import React, { useState } from "react";
 import ArticleCard from "@/components/article-card";
 
 type Props = {
@@ -33,7 +29,7 @@ function News({}: Props) {
   const { setTheme } = useTheme();
 
   return (
-    <div className="min-h-dvh min-w-dvw">
+    <div className="min-h-dvh">
       <main className="m-auto flex h-full w-10/12 max-w-7xl min-w-4xl flex-col items-center justify-center gap-4">
         <section className="flex w-full flex-col">
           <div className="flex items-center justify-between px-8 py-4">
@@ -92,8 +88,9 @@ function News({}: Props) {
           </Card>
         </section>
 
+        <div className="w-full">Latest News</div>
+
         <section className="flex w-full flex-1 flex-col">
-          <div className="pb-2">Latest News</div>
           <ArticleCard selectedCategory={selectedCategory} />
         </section>
       </main>
