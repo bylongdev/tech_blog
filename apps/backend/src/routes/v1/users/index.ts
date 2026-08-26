@@ -28,3 +28,15 @@ usersRouter.get(
 		}
 	}),
 );
+
+usersRouter.delete(
+	"/:id",
+	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+		const userId = req.params.id;
+		const userService = new UserService();
+
+		await userService.deleteUserById(userId as string);
+
+		res.status(200).json({ message: "User deleted successfully" });
+	}),
+);
