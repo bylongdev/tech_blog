@@ -10,8 +10,15 @@ export const articlesRouter: Router = Router();
 articlesRouter.get(
 	"/",
 	asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-		const articleService = new ArticleServiceV2();
-		const articles = await articleService.listArticles();
-		res.status(200).json({ articles });
+		try {
+			const query = req.query;
+
+			const articleService = new ArticleServiceV2();
+			const articles = await articleService.listArticles({ skip: query.skip });
+
+			res.status(200).json({ articles });
+		} catch (error) {
+			next(error);
+		}
 	}),
 );

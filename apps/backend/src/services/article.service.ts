@@ -90,7 +90,8 @@ export class ArticleService {
 }
 
 export class ArticleServiceV2 {
-	async listArticles() {
+	async listArticles(query: Record<string, any>) {
+		const skip = 0 || Number(query.skip);
 		return await prisma.articleCandidate.findMany({
 			orderBy: {
 				createdAt: "desc",
@@ -122,7 +123,7 @@ export class ArticleServiceV2 {
 					},
 				},
 			},
-			skip: 0,
+			skip: skip,
 			take: 10,
 		});
 	}

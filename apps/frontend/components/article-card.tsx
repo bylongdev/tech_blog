@@ -32,31 +32,40 @@ type Article = {
   };
 };
 
-function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
+function ArticleCard({
+  selectedCategory,
+  skip,
+}: {
+  selectedCategory: string;
+  skip: number;
+}) {
   const [articles, setArticles] = useState([] as Article[]);
 
   useEffect(() => {
     // Fetch articles based on the selected category
     const fetchArticles = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/v2/articles`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Category: selectedCategory,
+        const response = await fetch(
+          `http://localhost:4000/api/v2/articles?skip=${skip}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Category: selectedCategory,
+            },
           },
-        });
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch articles");
         }
         const data = await response.json();
-        setArticles(data.articles);
+        setArticles((prev) => [...prev, ...data.articles]);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
     };
     fetchArticles();
-  }, [selectedCategory]);
+  }, [selectedCategory, skip]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -112,7 +121,7 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
                 <Link
                   href={article.rawArticle.link}
                   target="_blank"
-                  className="flex justify-center"
+                  className="flex justify-end"
                 >
                   <Button variant="outline" size="sm">
                     Read More <SquareArrowOutUpRight />

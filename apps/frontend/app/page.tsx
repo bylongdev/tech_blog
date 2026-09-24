@@ -27,6 +27,7 @@ const CATEGORIES = [
 function News({}: Props) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { setTheme } = useTheme();
+  const [skip, setSkip] = useState(0);
 
   return (
     <div className="min-h-dvh">
@@ -89,8 +90,18 @@ function News({}: Props) {
         <div className="w-full">Latest News</div>
 
         <section className="flex w-full flex-1 flex-col">
-          <ArticleCard selectedCategory={selectedCategory} />
+          <ArticleCard selectedCategory={selectedCategory} skip={skip} />
         </section>
+
+        {/* autoplay pagination for articles once this component loads */}
+        <div className="py-4 text-center">
+          <Button
+            onClick={() => setSkip((prev) => prev + 10)}
+            variant="outline"
+          >
+            Load More
+          </Button>
+        </div>
       </main>
     </div>
   );
