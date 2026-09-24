@@ -1,6 +1,8 @@
 import { registerSources } from "./jobs/register-sources.job.js";
 import { fetchSources } from "./jobs/fetch-sources.job.js";
+import { requeueStuckCandidates } from "./jobs/requeue-stuck-candidates.job.js";
 import { queueListener } from "./queues/queue-listener.js";
+import { QueueProducer } from "./queues/producer.queue.js";
 
 const INTERVAL = 5 * 60 * 1000; // run every 5 minutes
 await queueListener.start();
@@ -8,6 +10,9 @@ await queueListener.start();
 async function main() {
 	await registerSources();
 	await fetchSources();
+	await requeueStuckCandidates();
+
+	const queueProducer = new QueueProducer("extracting");
 }
 
 async function run() {

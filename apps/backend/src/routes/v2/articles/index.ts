@@ -3,7 +3,6 @@ import { Router } from "express";
 import type { Request, Response, NextFunction } from "express";
 import { asyncHandler } from "../../../middleware/async-handler.js";
 
-import { HttpError } from "../../../lib/http-error.js";
 import { ArticleServiceV2 } from "../../../services/article.service.js";
 
 export const articlesRouter: Router = Router();

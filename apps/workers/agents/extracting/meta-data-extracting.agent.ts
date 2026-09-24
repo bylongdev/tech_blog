@@ -213,8 +213,10 @@ class MetaDataExtractingAgent extends OpenAIClient {
 								label: { type: "string" },
 								detail: { type: "string" },
 							},
+							required: ["label", "detail"],
 						},
 					},
+					required: ["headline", "context", "points"],
 				},
 			},
 			required: [

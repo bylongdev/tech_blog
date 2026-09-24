@@ -20,6 +20,9 @@ export class RawArticleService {
 
 					console.log(`Saved raw article with ID: ${rawArticle.id}`);
 
+					// Candidate starts as FAILED (pessimistic placeholder) and is only
+					// flipped to QUEUED once the job has actually been pushed to BullMQ,
+					// so QUEUED always implies a real job exists for it.
 					const candidate = await this.saveCandidateArticle(
 						this.mapToCandidateData(rawArticle),
 					);
@@ -28,14 +31,34 @@ export class RawArticleService {
 						`Saved candidate article with ID: ${candidate.id} for raw article ID: ${rawArticle.id}`,
 					);
 
+					const jobId = `extract-${candidate.id}`;
 					const queueProducer = new QueueProducer("extracting");
-					await queueProducer.add("meta_extracting", {
-						rawArticleId: candidate.id,
-						content: rawArticle.content || "",
-					});
-					await queueProducer.close(); // Close the producer after adding the job
+					try {
+						await queueProducer.add(
+							"meta_extracting",
+							{
+								rawArticleId: candidate.id,
+								content: rawArticle.content || "",
+							},
+							jobId,
+						);
 
-					console.log(`Queued candidate for metadata extraction`);
+						await prisma.articleCandidate.update({
+							where: { id: candidate.id },
+							data: { status: "QUEUED" },
+						});
+
+						console.log(`Queued candidate for metadata extraction`);
+					} catch (queueError) {
+						console.error(
+							`Failed to queue candidate ${candidate.id} (jobId: ${jobId}) for metadata extraction:`,
+							queueError,
+						);
+						// Leave status as FAILED so it can be picked up and re-queued later.
+						return false;
+					} finally {
+						await queueProducer.close(); // Close the producer after adding the job
+					}
 
 					return true; // Indicate success for this article
 				} catch (error) {
@@ -115,13 +138,13 @@ export class RawArticleService {
 			update: {
 				cleanedTitle: article.cleanedTitle,
 				embeddingText: article.embeddingText,
-				status: "QUEUED",
+				status: "FAILED",
 			},
 			create: {
 				rawArticleId: article.rawArticleId,
 				cleanedTitle: article.cleanedTitle,
 				embeddingText: article.embeddingText,
-				status: "QUEUED",
+				status: "FAILED",
 			},
 		});
 	}

@@ -14,8 +14,15 @@ class QueueProducer {
 		});
 	}
 
-	async add(jobName: string, data: any) {
-		return this.queue.add(jobName, data);
+	async add(jobName: string, data: any, jobId?: string) {
+		return this.queue.add(jobName, data, jobId ? { jobId } : undefined);
+	}
+
+	// Returns the existing job for this id, if any (waiting/active/delayed jobs
+	// are kept around; completed/failed ones are removed by defaultJobOptions,
+	// so a missing job means it's safe - and necessary - to re-add it).
+	async getJob(jobId: string) {
+		return this.queue.getJob(jobId);
 	}
 
 	async close() {

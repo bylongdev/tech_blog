@@ -17,24 +17,45 @@ async function registerCandidateJob(job: any) {
 			.filter(Boolean)
 			.join("\n");
 
-		// Create a new ArticleCandidate for embedding and grouping
+		// Create a new ArticleCandidate for embedding and grouping. Status starts
+		// as FAILED (pessimistic placeholder) and is only flipped to QUEUED once
+		// the job has actually been pushed to BullMQ below.
 		const candidate = await prisma.articleCandidate.create({
 			data: {
 				rawArticleId: rawArticleId,
 				cleanedTitle: cleanedTitle, // You can replace this with the cleaned title if you have a TitleService
 				embeddingText: embeddingText, // You can replace this with the cleaned title if you have a TitleService
-				status: "QUEUED",
+				status: "FAILED",
 			},
 		});
 
 		// Add the article to the embedding queue
+		const jobId = `embed-${candidate.id}`;
 		const queueProducer = new QueueProducer("embedding");
-		await queueProducer.add("create_embedding", {
-			articleCandidateId: candidate.id,
-		});
-		await queueProducer.close(); // Close the producer after adding the job
+		try {
+			await queueProducer.add(
+				"create_embedding",
+				{ articleCandidateId: candidate.id },
+				jobId,
+			);
 
-		console.log(`Article with raw ID ${rawArticleId} is queued for embedding.`);
+			await prisma.articleCandidate.update({
+				where: { id: candidate.id },
+				data: { status: "QUEUED" },
+			});
+
+			console.log(
+				`Article with raw ID ${rawArticleId} is queued for embedding.`,
+			);
+		} catch (queueError) {
+			console.error(
+				`Failed to queue candidate ${candidate.id} (jobId: ${jobId}) for embedding:`,
+				queueError,
+			);
+			// Leave status as FAILED so it can be picked up and re-queued later.
+		} finally {
+			await queueProducer.close(); // Close the producer after adding the job
+		}
 	} catch (error) {
 		console.error("Error processing register_candidate job:", error);
 	}

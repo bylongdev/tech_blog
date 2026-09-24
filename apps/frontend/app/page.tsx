@@ -57,14 +57,13 @@ function News({}: Props) {
               </Avatar>
             </div>
           </div>
-
+          -
           <div className="flex bg-zinc-700 px-12">
             {CATEGORIES.map((category) => (
               <Button
                 key={category}
                 variant="ghost"
                 className={`rounded-none border-0 border-b-2 p-4 text-zinc-300/70 hover:text-zinc-100 ${category === "ai" ? "uppercase" : "capitalize"} ${selectedCategory === category ? "border-zinc-100 text-zinc-100" : "border-transparent"}`}
-
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
