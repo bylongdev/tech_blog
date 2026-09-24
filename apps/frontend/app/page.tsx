@@ -30,7 +30,7 @@ function News({}: Props) {
 
   return (
     <div className="min-h-dvh">
-      <main className="m-auto flex h-full w-10/12 max-w-7xl min-w-4xl flex-col items-center justify-center gap-4">
+      <main className="m-auto flex h-full w-10/12 max-w-7xl min-w-4xl flex-col items-center justify-center gap-4 pb-8">
         <section className="flex w-full flex-col">
           <div className="flex items-center justify-between px-8 py-4">
             <div className="flex items-center gap-2">
@@ -57,7 +57,6 @@ function News({}: Props) {
               </Avatar>
             </div>
           </div>
-          -
           <div className="flex bg-zinc-700 px-12">
             {CATEGORIES.map((category) => (
               <Button

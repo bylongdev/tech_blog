@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
+import Image from "next/image";
 
 type Article = {
   id: string;
@@ -62,20 +63,22 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
       {articles.length > 0 ? (
         articles.map((article) => (
           <Card key={article.id} className="p-4">
-            <CardContent className="flex gap-8">
-              <div className="flex items-center justify-center gap-4">
-                {/* {article.rawArticle.imageUrl?.[0] ? (
-                        <Image
-                          src={
-                            article.rawArticle.imageUrl?.[0] ||
-                            "/images/placeholder.jpg"
-                          }
-                          alt={article.cleanedTitle}
-                          width={200}
-                          height={100}
-                          className="aspect-4/3 h-full object-cover object-left"
-                        />
-                      ) : null} */}
+            <CardContent className="grid min-h-48 grid-cols-6 gap-8">
+              <div className="col-span-1 flex items-center justify-center gap-4">
+                {article.rawArticle.imageUrl?.[0] ? (
+                  <Image
+                    src={
+                      article.rawArticle.imageUrl?.[0] ||
+                      "/images/placeholder.jpg"
+                    }
+                    alt={article.cleanedTitle}
+                    width={200}
+                    height={100}
+                    className="aspect-4/3 h-full object-cover object-left"
+                  />
+                ) : null}
+              </div>
+              <div className="col-span-4 flex items-center justify-center gap-4">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-xl font-medium">
                     {article.cleanedTitle}
@@ -84,12 +87,11 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
                     {article.summary}
                   </p>
                 </div>
+                <Separator orientation="vertical" className="" />
               </div>
 
-              <Separator orientation="vertical" className="" />
-
-              <div className="flex flex-1 flex-col items-start justify-between gap-2">
-                <div className="flex w-full flex-col gap-3 text-sm text-zinc-400/60">
+              <div className="flex flex-1 flex-col justify-between gap-2">
+                <div className="flex w-full flex-col items-start gap-3 text-sm text-zinc-400/60">
                   <Label className="">
                     {formatDistanceToNow(
                       new Date(article.rawArticle.publishedAt),
@@ -106,10 +108,11 @@ function ArticleCard({ selectedCategory }: { selectedCategory: string }) {
                     mins read
                   </Label>
                 </div>
+
                 <Link
                   href={article.rawArticle.link}
                   target="_blank"
-                  className="flex items-center"
+                  className="flex justify-center"
                 >
                   <Button variant="outline" size="sm">
                     Read More <SquareArrowOutUpRight />
