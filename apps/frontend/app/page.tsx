@@ -33,7 +33,7 @@ function News({}: Props) {
     <div className="min-h-dvh">
       <main className="m-auto flex h-full w-10/12 max-w-7xl min-w-4xl flex-col items-center justify-center gap-4 pb-8">
         <section className="flex w-full flex-col">
-          <div className="flex items-center justify-between px-8 py-4">
+          <div className="flex items-center justify-between py-4">
             <div className="flex items-center gap-2">
               <div className="p-4 text-5xl font-semibold">TL;DR</div>
               <div className="flex flex-col text-xs">
