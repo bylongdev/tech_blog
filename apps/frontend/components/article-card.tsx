@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Separator } from "./ui/separator";
 import Image from "next/image";
 
 type Article = {
@@ -88,17 +87,19 @@ function ArticleCard({
                 ) : null}
               </div>
 
-              <div className="col-span-4 flex flex-col items-center justify-center gap-4">
+              <div className="col-span-4 flex flex-col items-center justify-center gap-8">
                 <div className="flex flex-col gap-2">
                   <h3 className="text-xl font-medium">
                     {article.cleanedTitle}
                   </h3>
                   <div className="flex items-center gap-4 text-sm text-zinc-400/60">
-                    <h4 className="flex items-center gap-2">
+                    <h4 className="flex items-center gap-1">
                       <span className="inline-flex items-center gap-1">
                         <LinkIcon className="h-3 w-3" />
                       </span>
-                      $SOURCE
+                      <span>
+                        {article.rawArticle.source?.name || "Unknown Source"}
+                      </span>
                     </h4>
                     <Label className="">
                       {Math.ceil(
@@ -106,36 +107,36 @@ function ArticleCard({
                       )}{" "}
                       mins read
                     </Label>
+                    {/* <Label className="text-sm text-zinc-400/60">
+                      {formatDistanceToNow(
+                        new Date(article.rawArticle.publishedAt),
+                        { addSuffix: true },
+                      )}
+                    </Label> */}
                   </div>
                   <p className="text-muted-foreground indent-4">
                     {article.summary}
                   </p>
                 </div>
 
-                <div className="flex w-full flex-col gap-2">
-                  <div className="flex flex-1 justify-between gap-3 text-sm text-zinc-400/60">
+                <div className="grid w-full grid-cols-2 gap-3">
+                  <div className="flex flex-1 items-start justify-between gap-3 text-sm text-zinc-400/60">
                     <Label className="">
                       {article.rawArticle.author || "Unknown"}
                     </Label>
-                    <div className="flex flex-col gap-3">
-                      <Label className="">
-                        {formatDistanceToNow(
-                          new Date(article.rawArticle.publishedAt),
-                          { addSuffix: true },
-                        )}
-                      </Label>
-                    </div>
                   </div>
 
-                  <Link
-                    href={article.rawArticle.link}
-                    target="_blank"
-                    className="flex justify-end"
-                  >
-                    <Button variant="outline" size="sm">
-                      Read More <SquareArrowOutUpRight />
-                    </Button>
-                  </Link>
+                  <div className="flex flex-col items-end gap-4">
+                    <Link
+                      href={article.rawArticle.link}
+                      target="_blank"
+                      className="flex justify-end"
+                    >
+                      <Button variant="outline" size="sm">
+                        Read More <SquareArrowOutUpRight />
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </CardContent>
